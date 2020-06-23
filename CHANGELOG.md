@@ -8,6 +8,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ## Unreleased
 
 ### Added
+- `axi_lite_dw_downsizer`: Downsize the data width of AXI4-Lite transactions. Emmits the
+  appropriate amount of downstream transactions to perform the whole requested access.
 
 ### Changed
 
