@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
   appropriate amount of downstream transactions to perform the whole requested access.
 
 ### Changed
+- `axi_test:axi_rand_lite_slave`: R response field is now random.
 
 ### Fixed
 
