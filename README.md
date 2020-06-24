@@ -25,7 +25,7 @@ This is the implementation of the AMBA AXI protocol developed as part of the PUL
 | [`axi_isolate.sv`](src/axi_isolate.sv)                  | A module that can isolate downstream slaves from receiving new AXI4 transactions.                 |                                  |
 | [`axi_join`](src/axi_join.sv)                           | A connector that joins two AXI interfaces.                                                        |                                  |
 | [`axi_lite_demux`](src/axi_lite_demux.sv)               | Demultiplexes an AXI4-Lite bus from one slave port to multiple master ports.                      | [Doc](doc/axi_lite_demux.md)     |
-| [`axi_lite_dw_downsizer`](src/axi_lite_dw_downsizer.sv) | A data width converter between a wide AXI-Lite master and a narrower AXI-Lite slave               | [Doc][doc.axi_lite_dw_downsizer] |
+| [`axi_lite_dw_converter`](src/axi_lite_dw_converter.sv) | A data width converter between two AXI-Lite busses                                                | [Doc][doc.axi_lite_dw_converter] |
 | [`axi_lite_join`](src/axi_lite_join.sv)                 | A connector that joins two AXI-Lite interfaces.                                                   |                                  |
 | [`axi_lite_mailbox`](src/axi_lite_mailbox.sv)           | A AXI4-Lite Mailbox with two slave ports and usage triggered irq.                                 | [Doc](doc/axi_lite_mailbox.md)   |
 | [`axi_lite_mux`](src/axi_lite_mux.sv)                   | Multiplexes AXI4-Lite slave ports down to one master port.                                        | [Doc](doc/axi_lite_mux.md)       |

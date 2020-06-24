@@ -35,7 +35,7 @@ sources:
   - src/axi_isolate.sv
   - src/axi_join.sv
   - src/axi_lite_demux.sv
-  - src/axi_lite_dw_downsizer.sv
+  - src/axi_lite_dw_converter.sv
   - src/axi_lite_join.sv
   - src/axi_lite_mailbox.sv
   - src/axi_lite_mux.sv
@@ -71,6 +71,7 @@ sources:
       - test/tb_axi_dw_downsizer.sv
       - test/tb_axi_dw_upsizer.sv
       - test/tb_axi_isolate.sv
+      - test/tb_axi_lite_dw_converter.sv
       - test/tb_axi_lite_regs.sv
       - test/tb_axi_lite_to_apb.sv
       - test/tb_axi_lite_to_axi.sv
