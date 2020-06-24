@@ -151,6 +151,19 @@ module synth_bench (
     ) i_axi_lite_regs (.*);
   end
 
+  // AXI4-Lite DW converter
+  for (genvar i = 0; i < 3; i++) begin
+    for (genvar j = 0; j < 3; j++) begin
+      localparam int unsigned SLV_DW[3] = {32, 64, 128};
+      localparam int unsigned MST_DW[3] = {16, 32, 64};
+
+      synth_axi_lite_dw_converter #(
+        .AXI_SLV_PORT_DATA_WIDTH (SLV_DW[i]),
+        .AXI_MST_PORT_DATA_WIDTH (MST_DW[j])
+      ) i_axi_lite_dw_converter (.*);
+    end
+  end
+
 endmodule
 
 
@@ -588,4 +601,37 @@ module synth_axi_lite_regs #(
     .reg_load_i  ( reg_load    ),
     .reg_q_o     ( reg_q       )
   );
+endmodule
+
+module synth_axi_lite_dw_converter #(
+  parameter int unsigned AXI_SLV_PORT_DATA_WIDTH = 32'd0,
+  parameter int unsigned AXI_MST_PORT_DATA_WIDTH = 32'd0
+) (
+  input logic clk_i,
+  input logic rst_ni
+);
+  localparam int unsigned AXI_ADDR_WIDTH = 32'd64;
+
+  AXI_LITE #(
+    .AXI_ADDR_WIDTH ( AXI_ADDR_WIDTH          ),
+    .AXI_DATA_WIDTH ( AXI_SLV_PORT_DATA_WIDTH )
+  ) slv_intf ();
+
+  AXI_LITE #(
+    .AXI_ADDR_WIDTH ( AXI_ADDR_WIDTH          ),
+    .AXI_DATA_WIDTH ( AXI_MST_PORT_DATA_WIDTH )
+  ) mst_intf ();
+
+  axi_lite_dw_converter_intf #(
+    .AXI_ADDR_WIDTH          ( AXI_ADDR_WIDTH          ),
+    .AXI_SLV_PORT_DATA_WIDTH ( AXI_SLV_PORT_DATA_WIDTH ),
+    .AXI_MST_PORT_DATA_WIDTH ( AXI_MST_PORT_DATA_WIDTH )
+  ) i_axi_lite_dw_converter_intf (
+    .clk_i,
+    .rst_ni,
+    .slv    ( slv_intf ),
+    .mst    ( mst_intf )
+  );
+
+
 endmodule
