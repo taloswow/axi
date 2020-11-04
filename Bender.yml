@@ -49,6 +49,8 @@ sources:
   - src/axi_mux.sv
   - src/axi_serializer.sv
   - src/dma/axi_dma_backend.sv
+  - src/dma/frontends/src/transfer_id_gen.sv
+  - src/dma/frontends/src/axi_dma.sv
   # Level 3
   - src/axi_err_slv.sv
   - src/axi_dw_converter.sv
@@ -87,5 +89,6 @@ sources:
       - test/tb_axi_to_axi_lite.sv
       - test/tb_axi_xbar_pkg.sv
       - test/tb_axi_xbar.sv
+      - test/tb_axi_dma.sv
       # Level 1:
       - test/tb_axi_dma_backend.sv
