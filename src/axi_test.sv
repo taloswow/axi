@@ -1485,11 +1485,11 @@ package axi_test;
 
   class rand_axi_lite_slave #(
     // AXI interface parameters
-    parameter int unsigned AW,
-    parameter int unsigned DW,
+    parameter int unsigned AW = 32,
+    parameter int unsigned DW = 64,
     // Stimuli application and test time
-    parameter time  TA,
-    parameter time  TT,
+    parameter time  TA = 2ns,
+    parameter time  TT = 8ns,
     // Upper and lower bounds on wait cycles on Ax, W, and resp (R and B) channels
     parameter int   AX_MIN_WAIT_CYCLES = 0,
     parameter int   AX_MAX_WAIT_CYCLES = 100,
