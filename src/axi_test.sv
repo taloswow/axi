@@ -1318,11 +1318,11 @@ package axi_test;
   // AXI4-Lite random master and slave
   class rand_axi_lite_master #(
     // AXI interface parameters
-    parameter int unsigned AW,
-    parameter int unsigned DW,
+    parameter int unsigned AW = 32,
+    parameter int unsigned DW = 64,
     // Stimuli application and test time
-    parameter time  TA,
-    parameter time  TT,
+    parameter time  TA = 2ns,
+    parameter time  TT = 8ns,
     parameter int unsigned MIN_ADDR = 32'h0000_0000,
     parameter int unsigned MAX_ADDR = 32'h1000_0000,
     // Maximum number of open transactions
