@@ -1318,8 +1318,8 @@ package axi_test;
   // AXI4-Lite random master and slave
   class rand_axi_lite_master #(
     // AXI interface parameters
-    parameter int   AW,
-    parameter int   DW,
+    parameter int unsigned AW,
+    parameter int unsigned DW,
     // Stimuli application and test time
     parameter time  TA,
     parameter time  TT,
