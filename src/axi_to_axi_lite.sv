@@ -39,8 +39,8 @@ module axi_to_axi_lite #(
   input  lite_resp_t mst_resp_i
 );
   // full bus declarations
-  full_req_t  filtered_req,  splitted_req;
-  full_resp_t filtered_resp, splitted_resp;
+  full_req_t  filtered_req,  id_removed_req,  splitted_req;
+  full_resp_t filtered_resp, id_removed_resp, splitted_resp;
 
   // atomics adapter so that atomics can be resolved
   axi_atop_filter #(
@@ -57,6 +57,22 @@ module axi_to_axi_lite #(
     .mst_resp_i ( filtered_resp )
   );
 
+  // remove IDs
+  axi_serializer #(
+    .MaxReadTxns  ( AxiMaxReadTxns   ),
+    .MaxWriteTxns ( AxiMaxWriteTxns  ),
+    .AxiIdWidth   ( AxiIdWidth       ),
+    .req_t        ( full_req_t       ),
+    .resp_t       ( full_resp_t      )
+  ) i_axi_serializer (
+    .clk_i       ( clk_i           ),
+    .rst_ni      ( rst_ni          ),
+    .slv_req_i   ( filtered_req    ),
+    .slv_resp_o  ( filtered_resp   ),
+    .mst_req_o   ( id_removed_req  ),
+    .mst_resp_i  ( id_removed_resp )
+  );
+
   // burst splitter so that the id reflect module has no burst accessing it
   axi_burst_splitter #(
     .MaxReadTxns  ( AxiMaxReadTxns  ),
@@ -65,15 +81,16 @@ module axi_to_axi_lite #(
     .DataWidth    ( AxiDataWidth    ),
     .IdWidth      ( AxiIdWidth      ),
     .UserWidth    ( AxiUserWidth    ),
+    .SingleIdOnly ( 1               ),
     .req_t        ( full_req_t      ),
     .resp_t       ( full_resp_t     )
   ) i_axi_burst_splitter (
-    .clk_i      ( clk_i         ),
-    .rst_ni     ( rst_ni        ),
-    .slv_req_i  ( filtered_req  ),
-    .slv_resp_o ( filtered_resp ),
-    .mst_req_o  ( splitted_req  ),
-    .mst_resp_i ( splitted_resp )
+    .clk_i      ( clk_i           ),
+    .rst_ni     ( rst_ni          ),
+    .slv_req_i  ( id_removed_req  ),
+    .slv_resp_o ( id_removed_resp ),
+    .mst_req_o  ( splitted_req    ),
+    .mst_resp_i ( splitted_resp   )
   );
 
   // ID reflect module handles the conversion from the full AXI to AXI lite on the wireing

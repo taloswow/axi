@@ -35,6 +35,7 @@ module axi_burst_splitter #(
   parameter int unsigned DataWidth    = 32'd0,
   parameter int unsigned IdWidth      = 32'd0,
   parameter int unsigned UserWidth    = 32'd0,
+  parameter bit          SingleIdOnly =     0,
   parameter type         req_t        = logic,
   parameter type         resp_t       = logic
 ) (
@@ -138,9 +139,10 @@ module axi_burst_splitter #(
   logic           w_cnt_dec, w_cnt_req, w_cnt_gnt, w_cnt_err;
   axi_pkg::len_t  w_cnt_len;
   axi_burst_splitter_ax_chan #(
-    .chan_t   ( aw_chan_t    ),
-    .IdWidth  ( IdWidth      ),
-    .MaxTxns  ( MaxWriteTxns )
+    .chan_t       ( aw_chan_t    ),
+    .IdWidth      ( IdWidth      ),
+    .MaxTxns      ( MaxWriteTxns ),
+    .SingleIdOnly ( SingleIdOnly )
   ) i_axi_burst_splitter_aw_chan (
     .clk_i,
     .rst_ni,
@@ -232,9 +234,10 @@ module axi_burst_splitter #(
   logic           r_cnt_dec, r_cnt_req, r_cnt_gnt;
   axi_pkg::len_t  r_cnt_len;
   axi_burst_splitter_ax_chan #(
-    .chan_t   ( ar_chan_t   ),
-    .IdWidth  ( IdWidth     ),
-    .MaxTxns  ( MaxReadTxns )
+    .chan_t       ( ar_chan_t    ),
+    .IdWidth      ( IdWidth      ),
+    .MaxTxns      ( MaxReadTxns  ),
+    .SingleIdOnly ( SingleIdOnly )
   ) i_axi_burst_splitter_ar_chan (
     .clk_i,
     .rst_ni,
@@ -344,10 +347,11 @@ endmodule
 /// Store burst lengths in counters, which are associated to AXI IDs through ID queues (to allow
 /// reordering of responses w.r.t. requests).
 module axi_burst_splitter_ax_chan #(
-  parameter type         chan_t  = logic,
-  parameter int unsigned IdWidth = 0,
-  parameter int unsigned MaxTxns = 0,
-  parameter type         id_t    = logic[IdWidth-1:0]
+  parameter type         chan_t       = logic,
+  parameter int unsigned IdWidth      = 0,
+  parameter int unsigned MaxTxns      = 0,
+  parameter bit          SingleIdOnly = 0,
+  parameter type         id_t         = logic[IdWidth-1:0]
 ) (
   input  logic          clk_i,
   input  logic          rst_ni,
@@ -371,8 +375,9 @@ module axi_burst_splitter_ax_chan #(
 
   logic cnt_alloc_req, cnt_alloc_gnt;
   axi_burst_splitter_counters #(
-    .MaxTxns ( MaxTxns  ),
-    .IdWidth ( IdWidth  )
+    .MaxTxns      ( MaxTxns      ),
+    .IdWidth      ( IdWidth      ),
+    .SingleIdOnly ( SingleIdOnly )
   ) i_axi_burst_splitter_counters (
     .clk_i,
     .rst_ni,
@@ -459,9 +464,10 @@ endmodule
 
 /// Internal module of [`axi_burst_splitter`](module.axi_burst_splitter) to order transactions.
 module axi_burst_splitter_counters #(
-  parameter int unsigned MaxTxns = 0,
-  parameter int unsigned IdWidth = 0,
-  parameter type         id_t    = logic [IdWidth-1:0]
+  parameter int unsigned MaxTxns      = 0,
+  parameter int unsigned IdWidth      = 0,
+  parameter bit          SingleIdOnly = 0,
+  parameter type         id_t         = logic [IdWidth-1:0]
 ) (
   input  logic          clk_i,
   input  logic          rst_ni,
@@ -515,29 +521,79 @@ module axi_burst_splitter_counters #(
 
   logic idq_inp_req, idq_inp_gnt,
         idq_oup_gnt, idq_oup_valid, idq_oup_pop;
-  id_queue #(
-    .ID_WIDTH ( $bits(id_t) ),
-    .CAPACITY ( MaxTxns     ),
-    .data_t   ( cnt_idx_t   )
-  ) i_idq (
-    .clk_i,
-    .rst_ni,
-    .inp_id_i         ( alloc_id_i    ),
-    .inp_data_i       ( cnt_free_idx  ),
-    .inp_req_i        ( idq_inp_req   ),
-    .inp_gnt_o        ( idq_inp_gnt   ),
-    .exists_data_i    ( '0            ),
-    .exists_mask_i    ( '0            ),
-    .exists_req_i     ( 1'b0          ),
-    .exists_o         (/* keep open */),
-    .exists_gnt_o     (/* keep open */),
-    .oup_id_i         ( cnt_id_i      ),
-    .oup_pop_i        ( idq_oup_pop   ),
-    .oup_req_i        ( cnt_req_i     ),
-    .oup_data_o       ( cnt_r_idx     ),
-    .oup_data_valid_o ( idq_oup_valid ),
-    .oup_gnt_o        ( idq_oup_gnt   )
-  );
+  if (~SingleIdOnly) begin
+    id_queue #(
+      .ID_WIDTH ( $bits(id_t) ),
+      .CAPACITY ( MaxTxns     ),
+      .data_t   ( cnt_idx_t   )
+    ) i_idq (
+      .clk_i,
+      .rst_ni,
+      .inp_id_i         ( alloc_id_i    ),
+      .inp_data_i       ( cnt_free_idx  ),
+      .inp_req_i        ( idq_inp_req   ),
+      .inp_gnt_o        ( idq_inp_gnt   ),
+      .exists_data_i    ( '0            ),
+      .exists_mask_i    ( '0            ),
+      .exists_req_i     ( 1'b0          ),
+      .exists_o         (/* keep open */),
+      .exists_gnt_o     (/* keep open */),
+      .oup_id_i         ( cnt_id_i      ),
+      .oup_pop_i        ( idq_oup_pop   ),
+      .oup_req_i        ( cnt_req_i     ),
+      .oup_data_o       ( cnt_r_idx     ),
+      .oup_data_valid_o ( idq_oup_valid ),
+      .oup_gnt_o        ( idq_oup_gnt   )
+    );
+  end else begin
+    // logic id_fifo_ready_o;
+    // logic id_fifo_valid_o;
+    // stream_fifo #(
+    //   .FALL_THROUGH ( 0         ),
+    //   .DATA_WIDTH   ( 0         ),
+    //   .DEPTH        ( MaxTxns   ),
+    //   .T            ( cnt_idx_t )
+    // ) i_stream_fifo (
+    //   .clk_i       ( clk_i                   ),
+    //   .rst_ni      ( rst_ni                  ),
+    //   .flush_i     ( 1'b0                    ),
+    //   .testmode_i  ( 1'b0                    ),
+    //   .usage_o     (/* keep open */          ),
+    //   .data_i      ( cnt_free_idx            ),
+    //   .valid_i     ( idq_inp_req             ),
+    //   .ready_o     ( id_fifo_ready_o         ),
+    //   .data_o      ( cnt_r_idx               ),
+    //   .valid_o     ( id_fifo_valid_o         ),
+    //   .ready_i     ( cnt_req_i & idq_oup_pop )
+    // );
+    // assign idq_inp_gnt = id_fifo_ready_o & idq_inp_req;
+    // assign idq_oup_valid = id_fifo_valid_o & idq_oup_pop;
+    // assign idq_oup_gnt   = id_fifo_valid_o & idq_oup_pop
+    logic id_fifo_empty;
+    logic id_fifo_full;
+    fifo_v3 #(
+      .DEPTH      ( MaxTxns   ),
+      .dtype      ( cnt_idx_t )
+    ) i_fifo_v3 (
+      .clk_i      ( clk_i                                   ),
+      .rst_ni     ( rst_ni                                  ),
+      .flush_i    ( '0                                      ),
+      .testmode_i ( '0                                      ),
+      .full_o     ( id_fifo_full                            ),
+      .empty_o    ( id_fifo_empty                           ),
+      .usage_o    ( /* keep open */                         ),
+      .data_i     ( cnt_free_idx                            ),
+      .push_i     ( idq_inp_req & ~id_fifo_full             ),
+      .data_o     ( cnt_r_idx                               ),
+      .pop_i      ( idq_oup_pop & idq_oup_gnt & idq_inp_req )
+    );
+
+    assign idq_inp_gnt   = ~id_fifo_full;
+    assign idq_oup_gnt   = ~id_fifo_empty;
+    assign idq_oup_valid = ~id_fifo_empty;
+
+  end
+
   assign idq_inp_req = alloc_req_i & alloc_gnt_o;
   assign alloc_gnt_o = idq_inp_gnt & |(cnt_free);
   assign cnt_gnt_o   = idq_oup_gnt & idq_oup_valid;
