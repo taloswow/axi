@@ -14,6 +14,8 @@ axi:
     # Level 1
     - src/axi_intf.sv
     # Level 2
+    - src/axi_dc_src_wrap.sv
+    - src/axi_dc_dst_wrap.sv
     - src/axi_atop_filter.sv
     - src/axi_burst_splitter.sv
     - src/axi_cdc.sv
