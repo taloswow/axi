@@ -40,24 +40,25 @@ module axi_dc_dst_wrap #(
   localparam type R_T    =  logic [$bits(axi_pkg::resp_t)+$bits(id_t)+$bits(data_t)+$bits(user_t)+1-1:0]
 ) (
   // master side - clocked by `dst_clk_i`
-  input  logic      dst_clk_i,
-  input  logic      dst_rst_ni,
-  AXI_BUS.Master    dst,
-  input  logic [LogDepth:0]      async_data_slave_aw_wptr_i,
-  output logic [LogDepth:0]      async_data_slave_aw_rptr_o,
-  input  AW_T [2**LogDepth-1:0]  async_data_slave_aw_data_i,
-  input  logic [LogDepth:0]      async_data_slave_w_wptr_i,
-  output logic [LogDepth:0]      async_data_slave_w_rptr_o,
-  input  W_T [2**LogDepth-1:0]   async_data_slave_w_data_i,
-  input  logic [LogDepth:0]      async_data_slave_ar_wptr_i,
-  output logic [LogDepth:0]      async_data_slave_ar_rptr_o,
-  input  AR_T [2**LogDepth-1:0]  async_data_slave_ar_data_i,
-  output logic [LogDepth:0]      async_data_slave_b_wptr_o,
-  input  logic [LogDepth:0]      async_data_slave_b_rptr_i,
-  output B_T [2**LogDepth-1:0]   async_data_slave_b_data_o,
-  output logic [LogDepth:0]      async_data_slave_r_wptr_o,
-  input  logic [LogDepth:0]      async_data_slave_r_rptr_i,
-  output R_T [2**LogDepth-1:0]   async_data_slave_r_data_o
+  input logic               dst_clk_i,
+  input logic               dst_rst_ni,
+  AXI_BUS.Master            dst,
+  input logic               isolate_i, 
+  input logic [LogDepth:0]  async_data_slave_aw_wptr_i,
+  output logic [LogDepth:0] async_data_slave_aw_rptr_o,
+  input                     AW_T [2**LogDepth-1:0] async_data_slave_aw_data_i,
+  input logic [LogDepth:0]  async_data_slave_w_wptr_i,
+  output logic [LogDepth:0] async_data_slave_w_rptr_o,
+  input                     W_T [2**LogDepth-1:0] async_data_slave_w_data_i,
+  input logic [LogDepth:0]  async_data_slave_ar_wptr_i,
+  output logic [LogDepth:0] async_data_slave_ar_rptr_o,
+  input                     AR_T [2**LogDepth-1:0] async_data_slave_ar_data_i,
+  output logic [LogDepth:0] async_data_slave_b_wptr_o,
+  input logic [LogDepth:0]  async_data_slave_b_rptr_i,
+  output                    B_T [2**LogDepth-1:0] async_data_slave_b_data_o,
+  output logic [LogDepth:0] async_data_slave_r_wptr_o,
+  input logic [LogDepth:0]  async_data_slave_r_rptr_i,
+  output                    R_T [2**LogDepth-1:0] async_data_slave_r_data_o
 );
 
    `AXI_TYPEDEF_AW_CHAN_T(aw_chan_t, addr_t, id_t, user_t)
@@ -76,14 +77,14 @@ module axi_dc_dst_wrap #(
         .T(logic [$bits(aw_chan_t)-1:0]),
         .LOG_DEPTH(LogDepth)
     ) cdc_fifo_gray_dst_aw (
-        .dst_rst_ni           ( dst_rst_ni                   ),
-        .dst_clk_i            ( dst_clk_i                    ),
-        .dst_data_o           ( dst_req.aw                   ),
-        .dst_valid_o          ( dst_req.aw_valid             ),
-        .dst_ready_i          ( dst_resp.aw_ready            ),
-        .async_data_i         ( async_data_slave_aw_data_i   ),
-        .async_wptr_i         ( async_data_slave_aw_wptr_i   ),
-        .async_rptr_o         ( async_data_slave_aw_rptr_o   )
+        .dst_rst_ni           ( dst_rst_ni                     ),
+        .dst_clk_i            ( dst_clk_i                      ),
+        .dst_data_o           ( dst_req.aw                     ),
+        .dst_valid_o          ( dst_req.aw_valid               ),
+        .dst_ready_i          ( dst_resp.aw_ready & ~isolate_i ),
+        .async_data_i         ( async_data_slave_aw_data_i     ),
+        .async_wptr_i         ( async_data_slave_aw_wptr_i     ),
+        .async_rptr_o         ( async_data_slave_aw_rptr_o     )
     );
 
 
@@ -91,14 +92,14 @@ module axi_dc_dst_wrap #(
         .T(logic [$bits(w_chan_t)-1:0]),
         .LOG_DEPTH(LogDepth)
     ) cdc_fifo_gray_dst_w (
-        .dst_rst_ni           ( dst_rst_ni                   ),
-        .dst_clk_i            ( dst_clk_i                    ),
-        .dst_data_o           ( dst_req.w                    ),
-        .dst_valid_o          ( dst_req.w_valid              ),
-        .dst_ready_i          ( dst_resp.w_ready             ),
-        .async_data_i         ( async_data_slave_w_data_i    ),
-        .async_wptr_i         ( async_data_slave_w_wptr_i    ),
-        .async_rptr_o         ( async_data_slave_w_rptr_o    )
+        .dst_rst_ni           ( dst_rst_ni                     ),
+        .dst_clk_i            ( dst_clk_i                      ),
+        .dst_data_o           ( dst_req.w                      ),
+        .dst_valid_o          ( dst_req.w_valid                ),
+        .dst_ready_i          ( dst_resp.w_ready  & ~isolate_i ),
+        .async_data_i         ( async_data_slave_w_data_i      ),
+        .async_wptr_i         ( async_data_slave_w_wptr_i      ),
+        .async_rptr_o         ( async_data_slave_w_rptr_o      )
     );
 
 
@@ -106,14 +107,14 @@ module axi_dc_dst_wrap #(
         .T(logic [$bits(b_chan_t)-1:0]),
         .LOG_DEPTH(LogDepth)
     ) cdc_fifo_gray_src_b (
-        .src_rst_ni           ( dst_rst_ni                    ),
-        .src_clk_i            ( dst_clk_i                     ),
-        .src_data_i           ( dst_resp.b                    ),
-        .src_valid_i          ( dst_resp.b_valid              ),
-        .src_ready_o          ( dst_req.b_ready               ),
-        .async_data_o         ( async_data_slave_b_data_o     ),
-        .async_wptr_o         ( async_data_slave_b_wptr_o     ),
-        .async_rptr_i         ( async_data_slave_b_rptr_i     )
+        .src_rst_ni           ( dst_rst_ni                     ),
+        .src_clk_i            ( dst_clk_i                      ),
+        .src_data_i           ( dst_resp.b                     ),
+        .src_valid_i          ( dst_resp.b_valid  & ~isolate_i ),
+        .src_ready_o          ( dst_req.b_ready                ),
+        .async_data_o         ( async_data_slave_b_data_o      ),
+        .async_wptr_o         ( async_data_slave_b_wptr_o      ),
+        .async_rptr_i         ( async_data_slave_b_rptr_i      )
     );
 
 
@@ -124,7 +125,7 @@ module axi_dc_dst_wrap #(
         .src_rst_ni           ( dst_rst_ni                    ),
         .src_clk_i            ( dst_clk_i                     ),
         .src_data_i           ( dst_resp.r                    ),
-        .src_valid_i          ( dst_resp.r_valid              ),
+        .src_valid_i          ( dst_resp.r_valid & ~isolate_i ),
         .src_ready_o          ( dst_req.r_ready               ),
         .async_data_o         ( async_data_slave_r_data_o     ),
         .async_wptr_o         ( async_data_slave_r_wptr_o     ),
@@ -135,14 +136,14 @@ module axi_dc_dst_wrap #(
         .T(logic [$bits(ar_chan_t)-1:0]),
         .LOG_DEPTH(LogDepth)
     ) cdc_fifo_gray_dst_ar (
-        .dst_rst_ni           ( dst_rst_ni                   ),
-        .dst_clk_i            ( dst_clk_i                    ),
-        .dst_data_o           ( dst_req.ar                   ),
-        .dst_valid_o          ( dst_req.ar_valid             ),
-        .dst_ready_i          ( dst_resp.ar_ready            ),
-        .async_data_i         ( async_data_slave_ar_data_i   ),
-        .async_wptr_i         ( async_data_slave_ar_wptr_i   ),
-        .async_rptr_o         ( async_data_slave_ar_rptr_o   )
+        .dst_rst_ni           ( dst_rst_ni                     ),
+        .dst_clk_i            ( dst_clk_i                      ),
+        .dst_data_o           ( dst_req.ar                     ),
+        .dst_valid_o          ( dst_req.ar_valid               ),
+        .dst_ready_i          ( dst_resp.ar_ready & ~isolate_i ),
+        .async_data_i         ( async_data_slave_ar_data_i     ),
+        .async_wptr_i         ( async_data_slave_ar_wptr_i     ),
+        .async_rptr_o         ( async_data_slave_ar_rptr_o     )
     );
 
 endmodule
