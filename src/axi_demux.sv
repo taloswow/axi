@@ -152,19 +152,25 @@ module axi_demux #(
     assign slv_aw_chan_select_in.aw_chan   = slv_req_i.aw;
     assign slv_aw_chan_select_in.aw_select = slv_aw_select_i;
 
+    // Workaround for bug in Questa 2020.2 and 2021.1
+    typedef logic [$bits(aw_chan_select_t)-1:0] aw_chan_select_flat_t;
+    aw_chan_select_flat_t slv_aw_chan_select_in_flat,
+                          slv_aw_chan_select_out_flat;
+    assign slv_aw_chan_select_in_flat = slv_aw_chan_select_in;
     spill_register #(
-      .T       ( aw_chan_select_t      ),
+      .T       ( aw_chan_select_flat_t ),
       .Bypass  ( ~SpillAw              ) // because module param indicates if we want a spill reg
     ) i_aw_spill_reg (
       .clk_i   ( clk_i                 ),
       .rst_ni  ( rst_ni                ),
       .valid_i ( slv_req_i.aw_valid    ),
       .ready_o ( slv_resp_o.aw_ready   ),
-      .data_i  ( slv_aw_chan_select_in ),
+      .data_i  ( slv_aw_chan_select_in_flat ),
       .valid_o ( slv_aw_valid          ),
       .ready_i ( slv_aw_ready          ),
-      .data_o  ( slv_aw_chan_select    )
+      .data_o  ( slv_aw_chan_select_out_flat )
     );
+    assign slv_aw_chan_select = slv_aw_chan_select_out_flat;
 
     // Control of the AW handshake
     always_comb begin
@@ -323,19 +329,25 @@ module axi_demux #(
     assign slv_ar_chan_select_in.ar_chan   = slv_req_i.ar;
     // assign slv_ar_chan_select_in.ar_chan   = slv_ar_chan_i;
     assign slv_ar_chan_select_in.ar_select = slv_ar_select_i;
+    // Workaround for bug in Questa 2020.2 and 2021.1
+    typedef logic [$bits(ar_chan_select_t)-1:0] ar_chan_select_flat_t;
+    ar_chan_select_flat_t slv_ar_chan_select_in_flat,
+                          slv_ar_chan_select_out_flat;
+    assign slv_ar_chan_select_in_flat = slv_ar_chan_select_in;
     spill_register #(
-      .T       ( ar_chan_select_t      ),
-      .Bypass  ( ~SpillAr              )
+      .T       ( ar_chan_select_flat_t ),
+      .Bypass  ( ~SpillAr              ) // because module param indicates if we want a spill reg
     ) i_ar_spill_reg (
       .clk_i   ( clk_i                 ),
       .rst_ni  ( rst_ni                ),
       .valid_i ( slv_req_i.ar_valid    ),
       .ready_o ( slv_resp_o.ar_ready   ),
-      .data_i  ( slv_ar_chan_select_in ),
+      .data_i  ( slv_ar_chan_select_in_flat ),
       .valid_o ( slv_ar_valid          ),
       .ready_i ( slv_ar_ready          ),
-      .data_o  ( slv_ar_chan_select    )
+      .data_o  ( slv_ar_chan_select_out_flat )
     );
+    assign slv_ar_chan_select = slv_ar_chan_select_out_flat;
 
     // control of the AR handshake
     always_comb begin
