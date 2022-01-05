@@ -79,6 +79,7 @@ sources:
       - test/tb_axi_delayer.sv
       - test/tb_axi_dw_downsizer.sv
       - test/tb_axi_dw_upsizer.sv
+      - test/tb_axi_dw_upsizer_1.sv
       - test/tb_axi_isolate.sv
       - test/tb_axi_lite_mailbox.sv
       - test/tb_axi_lite_regs.sv
