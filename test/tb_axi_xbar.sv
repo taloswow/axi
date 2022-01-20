@@ -38,35 +38,35 @@ module tb_axi_xbar #(
   localparam time TestTime =  8ns;
 
   // axi configuration
-  localparam int unsigned AxiIdWidthMasters =  4;
-  localparam int unsigned AxiIdUsed         =  3; // Has to be <= AxiIdWidthMasters
-  localparam int unsigned AxiIdWidthSlaves  =  AxiIdWidthMasters + $clog2(TbNumMst);
-  localparam int unsigned AxiAddrWidth      =  32;    // Axi Address Width
-  localparam int unsigned AxiDataWidth      =  64;    // Axi Data Width
-  localparam int unsigned AxiStrbWidth      =  AxiDataWidth / 8;
-  localparam int unsigned AxiUserWidth      =  5;
+  localparam int unsigned IdWidthMasters =  4;
+  localparam int unsigned IdUsed         =  3; // Has to be <= IdWidthMasters
+  localparam int unsigned IdWidthSlaves  =  IdWidthMasters + $clog2(TbNumMst);
+  localparam int unsigned AddrWidth      =  32;    // Address Width
+  localparam int unsigned DataWidth      =  64;    // Data Width
+  localparam int unsigned StrbWidth      =  DataWidth / 8;
+  localparam int unsigned UserWidth      =  5;
   // in the bench can change this variables which are set here freely
   localparam axi_pkg::xbar_cfg_t xbar_cfg = '{
-    NoSlvPorts:         TbNumMst,
-    NoMstPorts:         TbNumSlv,
-    MaxMstTrans:        10,
-    MaxSlvTrans:        6,
-    FallThrough:        1'b0,
-    LatencyMode:        axi_pkg::CUT_ALL_AX,
-    AxiIdWidthSlvPorts: AxiIdWidthMasters,
-    AxiIdUsedSlvPorts:  AxiIdUsed,
-    UniqueIds:          TbUniqueIds,
-    AxiAddrWidth:       AxiAddrWidth,
-    AxiDataWidth:       AxiDataWidth,
-    NoAddrRules:        8
+    NoSlvPorts:      TbNumMst,
+    NoMstPorts:      TbNumSlv,
+    MaxMstTrans:     10,
+    MaxSlvTrans:     6,
+    FallThrough:     1'b0,
+    LatencyMode:     axi_pkg::CUT_ALL_AX,
+    IdWidthSlvPorts: IdWidthMasters,
+    IdUsedSlvPorts:  IdUsed,
+    UniqueIds:       TbUniqueIds,
+    AddrWidth:       AddrWidth,
+    DataWidth:       DataWidth,
+    NoAddrRules:     8
   };
-  typedef logic [AxiIdWidthMasters-1:0] id_mst_t;
-  typedef logic [AxiIdWidthSlaves-1:0]  id_slv_t;
-  typedef logic [AxiAddrWidth-1:0]      addr_t;
-  typedef axi_pkg::xbar_rule_32_t       rule_t; // Has to be the same width as axi addr
-  typedef logic [AxiDataWidth-1:0]      data_t;
-  typedef logic [AxiStrbWidth-1:0]      strb_t;
-  typedef logic [AxiUserWidth-1:0]      user_t;
+  typedef logic [IdWidthMasters-1:0] id_mst_t;
+  typedef logic [IdWidthSlaves-1:0]  id_slv_t;
+  typedef logic [AddrWidth-1:0]      addr_t;
+  typedef axi_pkg::xbar_rule_32_t    rule_t; // Has to be the same width as axi addr
+  typedef logic [DataWidth-1:0]      data_t;
+  typedef logic [StrbWidth-1:0]      strb_t;
+  typedef logic [UserWidth-1:0]      user_t;
 
   `AXI_TYPEDEF_AW_CHAN_T(aw_chan_mst_t, addr_t, id_mst_t, user_t)
   `AXI_TYPEDEF_AW_CHAN_T(aw_chan_slv_t, addr_t, id_slv_t, user_t)
@@ -97,10 +97,10 @@ module tb_axi_xbar #(
 
   typedef axi_test::axi_rand_master #(
     // AXI interface parameters
-    .AW ( AxiAddrWidth       ),
-    .DW ( AxiDataWidth       ),
-    .IW ( AxiIdWidthMasters  ),
-    .UW ( AxiUserWidth       ),
+    .AW ( AddrWidth          ),
+    .DW ( DataWidth          ),
+    .IW ( IdWidthMasters     ),
+    .UW ( UserWidth          ),
     // Stimuli application and test time
     .TA ( ApplTime           ),
     .TT ( TestTime           ),
@@ -113,13 +113,13 @@ module tb_axi_xbar #(
   ) axi_rand_master_t;
   typedef axi_test::axi_rand_slave #(
     // AXI interface parameters
-    .AW ( AxiAddrWidth     ),
-    .DW ( AxiDataWidth     ),
-    .IW ( AxiIdWidthSlaves ),
-    .UW ( AxiUserWidth     ),
+    .AW ( AddrWidth     ),
+    .DW ( DataWidth     ),
+    .IW ( IdWidthSlaves ),
+    .UW ( UserWidth     ),
     // Stimuli application and test time
-    .TA ( ApplTime         ),
-    .TT ( TestTime         )
+    .TA ( ApplTime      ),
+    .TT ( TestTime      )
   ) axi_rand_slave_t;
 
   // -------------
@@ -142,22 +142,22 @@ module tb_axi_xbar #(
   // AXI Interfaces
   // -------------------------------
   AXI_BUS #(
-    .AXI_ADDR_WIDTH ( AxiAddrWidth      ),
-    .AXI_DATA_WIDTH ( AxiDataWidth      ),
-    .AXI_ID_WIDTH   ( AxiIdWidthMasters ),
-    .AXI_USER_WIDTH ( AxiUserWidth      )
+    .AXI_ADDR_WIDTH ( AddrWidth      ),
+    .AXI_DATA_WIDTH ( DataWidth      ),
+    .AXI_ID_WIDTH   ( IdWidthMasters ),
+    .AXI_USER_WIDTH ( UserWidth      )
   ) master [TbNumMst-1:0] ();
   AXI_BUS_DV #(
-    .AXI_ADDR_WIDTH ( AxiAddrWidth      ),
-    .AXI_DATA_WIDTH ( AxiDataWidth      ),
-    .AXI_ID_WIDTH   ( AxiIdWidthMasters ),
-    .AXI_USER_WIDTH ( AxiUserWidth      )
+    .AXI_ADDR_WIDTH ( AddrWidth      ),
+    .AXI_DATA_WIDTH ( DataWidth      ),
+    .AXI_ID_WIDTH   ( IdWidthMasters ),
+    .AXI_USER_WIDTH ( UserWidth      )
   ) master_dv [TbNumMst-1:0] (clk);
   AXI_BUS_DV #(
-    .AXI_ADDR_WIDTH ( AxiAddrWidth      ),
-    .AXI_DATA_WIDTH ( AxiDataWidth      ),
-    .AXI_ID_WIDTH   ( AxiIdWidthMasters ),
-    .AXI_USER_WIDTH ( AxiUserWidth      )
+    .AXI_ADDR_WIDTH ( AddrWidth      ),
+    .AXI_DATA_WIDTH ( DataWidth      ),
+    .AXI_ID_WIDTH   ( IdWidthMasters ),
+    .AXI_USER_WIDTH ( UserWidth      )
   ) master_monitor_dv [TbNumMst-1:0] (clk);
   for (genvar i = 0; i < TbNumMst; i++) begin : gen_conn_dv_masters
     `AXI_ASSIGN (master[i], master_dv[i])
@@ -166,22 +166,22 @@ module tb_axi_xbar #(
   end
 
   AXI_BUS #(
-    .AXI_ADDR_WIDTH ( AxiAddrWidth     ),
-    .AXI_DATA_WIDTH ( AxiDataWidth     ),
-    .AXI_ID_WIDTH   ( AxiIdWidthSlaves ),
-    .AXI_USER_WIDTH ( AxiUserWidth     )
+    .AXI_ADDR_WIDTH ( AddrWidth     ),
+    .AXI_DATA_WIDTH ( DataWidth     ),
+    .AXI_ID_WIDTH   ( IdWidthSlaves ),
+    .AXI_USER_WIDTH ( UserWidth     )
   ) slave [TbNumSlv-1:0] ();
   AXI_BUS_DV #(
-    .AXI_ADDR_WIDTH ( AxiAddrWidth     ),
-    .AXI_DATA_WIDTH ( AxiDataWidth     ),
-    .AXI_ID_WIDTH   ( AxiIdWidthSlaves ),
-    .AXI_USER_WIDTH ( AxiUserWidth     )
+    .AXI_ADDR_WIDTH ( AddrWidth     ),
+    .AXI_DATA_WIDTH ( DataWidth     ),
+    .AXI_ID_WIDTH   ( IdWidthSlaves ),
+    .AXI_USER_WIDTH ( UserWidth     )
   ) slave_dv [TbNumSlv-1:0](clk);
   AXI_BUS_DV #(
-    .AXI_ADDR_WIDTH ( AxiAddrWidth     ),
-    .AXI_DATA_WIDTH ( AxiDataWidth     ),
-    .AXI_ID_WIDTH   ( AxiIdWidthSlaves ),
-    .AXI_USER_WIDTH ( AxiUserWidth     )
+    .AXI_ADDR_WIDTH ( AddrWidth     ),
+    .AXI_DATA_WIDTH ( DataWidth     ),
+    .AXI_ID_WIDTH   ( IdWidthSlaves ),
+    .AXI_USER_WIDTH ( UserWidth     )
   ) slave_monitor_dv [TbNumSlv-1:0](clk);
   for (genvar i = 0; i < TbNumSlv; i++) begin : gen_conn_dv_slaves
     `AXI_ASSIGN(slave_dv[i], slave[i])
@@ -217,17 +217,17 @@ module tb_axi_xbar #(
 
   initial begin : proc_monitor
     static tb_axi_xbar_pkg::axi_xbar_monitor #(
-      .AxiAddrWidth      ( AxiAddrWidth         ),
-      .AxiDataWidth      ( AxiDataWidth         ),
-      .AxiIdWidthMasters ( AxiIdWidthMasters    ),
-      .AxiIdWidthSlaves  ( AxiIdWidthSlaves     ),
-      .AxiUserWidth      ( AxiUserWidth         ),
-      .NoMasters         ( TbNumMst            ),
-      .NoSlaves          ( TbNumSlv             ),
-      .NoAddrRules       ( xbar_cfg.NoAddrRules ),
-      .rule_t            ( rule_t               ),
-      .AddrMap           ( AddrMap              ),
-      .TimeTest          ( TestTime             )
+      .AddrWidth      ( AddrWidth            ),
+      .DataWidth      ( DataWidth            ),
+      .IdWidthMasters ( IdWidthMasters       ),
+      .IdWidthSlaves  ( IdWidthSlaves        ),
+      .UserWidth      ( UserWidth            ),
+      .NoMasters      ( TbNumMst             ),
+      .NoSlaves       ( TbNumSlv             ),
+      .NoAddrRules    ( xbar_cfg.NoAddrRules ),
+      .rule_t         ( rule_t               ),
+      .AddrMap        ( AddrMap              ),
+      .TimeTest       ( TestTime             )
     ) monitor = new( master_monitor_dv, slave_monitor_dv );
     fork
       monitor.run();
@@ -257,9 +257,9 @@ module tb_axi_xbar #(
   // DUT
   //-----------------------------------
   axi_xbar_intf #(
-    .AXI_USER_WIDTH ( AxiUserWidth  ),
-    .Cfg            ( xbar_cfg      ),
-    .rule_t         ( rule_t        )
+    .AXI_USER_WIDTH ( UserWidth  ),
+    .Cfg            ( xbar_cfg   ),
+    .rule_t         ( rule_t     )
   ) i_xbar_dut (
     .clk_i                  ( clk     ),
     .rst_ni                 ( rst_n   ),

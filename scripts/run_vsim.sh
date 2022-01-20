@@ -49,26 +49,26 @@ exec_test() {
             call_vsim tb_$1
             ;;
         axi_dw_downsizer)
-            for AxiSlvPortDataWidth in 8 16 32 64 128 256 512 1024; do
-                for (( AxiMstPortDataWidth = 8; \
-                        AxiMstPortDataWidth < $AxiSlvPortDataWidth; \
-                        AxiMstPortDataWidth *= 2 )); \
+            for SlvPortDataWidth in 8 16 32 64 128 256 512 1024; do
+                for (( MstPortDataWidth = 8; \
+                        MstPortDataWidth < $SlvPortDataWidth; \
+                        MstPortDataWidth *= 2 )); \
                 do
                     call_vsim tb_axi_dw_downsizer \
-                            -gTbAxiSlvPortDataWidth=$AxiSlvPortDataWidth \
-                            -gTbAxiMstPortDataWidth=$AxiMstPortDataWidth -t 1ps
+                            -gTbSlvPortDataWidth=$SlvPortDataWidth \
+                            -gTbMstPortDataWidth=$MstPortDataWidth -t 1ps
                 done
             done
             ;;
         axi_dw_upsizer)
-            for AxiSlvPortDataWidth in 8 16 32 64 128 256 512 1024; do
-                for (( AxiMstPortDataWidth = $AxiSlvPortDataWidth*2; \
-                        AxiMstPortDataWidth <= 1024; \
-                        AxiMstPortDataWidth *= 2 )); \
+            for SlvPortDataWidth in 8 16 32 64 128 256 512 1024; do
+                for (( MstPortDataWidth = $SlvPortDataWidth*2; \
+                        MstPortDataWidth <= 1024; \
+                        MstPortDataWidth *= 2 )); \
                 do
                     call_vsim tb_axi_dw_upsizer \
-                            -gTbAxiSlvPortDataWidth=$AxiSlvPortDataWidth \
-                            -gTbAxiMstPortDataWidth=$AxiMstPortDataWidth -t 1ps
+                            -gTbSlvPortDataWidth=$SlvPortDataWidth \
+                            -gTbMstPortDataWidth=$MstPortDataWidth -t 1ps
                 done
             done
             ;;
@@ -98,21 +98,21 @@ exec_test() {
                                             -t 1ns -coverage -classdebug \
                                             -voptargs="+acc +cover=bcesfx" \
                                             -GTbEnExcl=$EXCL \
-                                            -GTbAxiSlvPortIdWidth=$SLV_PORT_IW \
-                                            -GTbAxiMstPortIdWidth=$MST_PORT_IW \
-                                            -GTbAxiSlvPortMaxUniqIds=$MAX_UNIQ_SLV_PORT_IDS \
-                                            -GTbAxiSlvPortMaxTxnsPerId=5
+                                            -GTbSlvPortIdWidth=$SLV_PORT_IW \
+                                            -GTbMstPortIdWidth=$MST_PORT_IW \
+                                            -GTbSlvPortMaxUniqIds=$MAX_UNIQ_SLV_PORT_IDS \
+                                            -GTbSlvPortMaxTxnsPerId=5
                                 else
                                     call_vsim tb_axi_iw_converter \
                                             -t 1ns -coverage -classdebug \
                                             -voptargs="+acc +cover=bcesfx" \
                                             -GTbEnExcl=$EXCL \
-                                            -GTbAxiSlvPortIdWidth=$SLV_PORT_IW \
-                                            -GTbAxiMstPortIdWidth=$MST_PORT_IW \
-                                            -GTbAxiSlvPortMaxUniqIds=$MAX_UNIQ_SLV_PORT_IDS \
-                                            -GTbAxiSlvPortMaxTxns=31 \
-                                            -GTbAxiMstPortMaxUniqIds=$((2**MST_PORT_IW)) \
-                                            -GTbAxiMstPortMaxTxnsPerId=7
+                                            -GTbSlvPortIdWidth=$SLV_PORT_IW \
+                                            -GTbMstPortIdWidth=$MST_PORT_IW \
+                                            -GTbSlvPortMaxUniqIds=$MAX_UNIQ_SLV_PORT_IDS \
+                                            -GTbSlvPortMaxTxns=31 \
+                                            -GTbMstPortMaxUniqIds=$((2**MST_PORT_IW)) \
+                                            -GTbMstPortMaxTxnsPerId=7
                                 fi
                             done
                         else
@@ -120,9 +120,9 @@ exec_test() {
                                     -t 1ns -coverage -classdebug \
                                     -voptargs="+acc +cover=bcesfx" \
                                     -GTbEnExcl=$EXCL \
-                                    -GTbAxiSlvPortIdWidth=$SLV_PORT_IW \
-                                    -GTbAxiMstPortIdWidth=$MST_PORT_IW \
-                                    -GTbAxiSlvPortMaxTxnsPerId=3
+                                    -GTbSlvPortIdWidth=$SLV_PORT_IW \
+                                    -GTbMstPortIdWidth=$MST_PORT_IW \
+                                    -GTbSlvPortMaxTxnsPerId=3
                         fi
                     done
                 done

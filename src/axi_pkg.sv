@@ -399,11 +399,11 @@ package axi_pkg;
     int unsigned   MaxSlvTrans;
     bit            FallThrough;
     xbar_latency_e LatencyMode;
-    int unsigned   AxiIdWidthSlvPorts;
-    int unsigned   AxiIdUsedSlvPorts;
+    int unsigned   IdWidthSlvPorts;
+    int unsigned   IdUsedSlvPorts;
     bit            UniqueIds;
-    int unsigned   AxiAddrWidth;
-    int unsigned   AxiDataWidth;
+    int unsigned   AddrWidth;
+    int unsigned   DataWidth;
     int unsigned   NoAddrRules;
   } xbar_cfg_t;
 
