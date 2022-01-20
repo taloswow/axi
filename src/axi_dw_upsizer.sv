@@ -31,19 +31,19 @@ module axi_dw_upsizer #(
     parameter type ar_chan_t                   = logic, // AR Channel Type
     parameter type mst_r_chan_t                = logic, //  R Channel Type for mst port
     parameter type slv_r_chan_t                = logic, //  R Channel Type for slv port
-    parameter type axi_mst_req_t               = logic, // AXI Request Type for mst ports
-    parameter type axi_mst_resp_t              = logic, // AXI Response Type for mst ports
-    parameter type axi_slv_req_t               = logic, // AXI Request Type for slv ports
-    parameter type axi_slv_resp_t              = logic  // AXI Response Type for slv ports
+    parameter type mst_port_axi_req_t          = logic, // AXI Request Type for mst ports
+    parameter type mst_port_axi_rsp_t          = logic, // AXI Response Type for mst ports
+    parameter type slv_port_axi_req_t          = logic, // AXI Request Type for slv ports
+    parameter type slv_port_axi_rsp_t          = logic  // AXI Response Type for slv ports
   ) (
-    input  logic          clk_i,
-    input  logic          rst_ni,
+    input  logic              clk_i,
+    input  logic              rst_ni,
     // Slave interface
-    input  axi_slv_req_t  slv_req_i,
-    output axi_slv_resp_t slv_resp_o,
+    input  slv_port_axi_req_t slv_req_i,
+    output slv_port_axi_rsp_t slv_resp_o,
     // Master interface
-    output axi_mst_req_t  mst_req_o,
-    input  axi_mst_resp_t mst_resp_i
+    output mst_port_axi_req_t mst_req_o,
+    input  mst_port_axi_rsp_t mst_resp_i
   );
 
   /*****************
@@ -80,8 +80,8 @@ module axi_dw_upsizer #(
   typedef logic [$clog2(AxiMstPortStrbWidth/AxiSlvPortStrbWidth) + 7:0] burst_len_t;
 
   // Internal AXI bus
-  axi_mst_req_t  mst_req;
-  axi_mst_resp_t mst_resp;
+  mst_port_axi_req_t mst_req;
+  mst_port_axi_rsp_t mst_resp;
 
   /**************
    *  ARBITERS  *
@@ -179,14 +179,14 @@ module axi_dw_upsizer #(
    *  ERROR SLAVE  *
    *****************/
 
-  axi_mst_req_t  axi_err_req;
-  axi_mst_resp_t axi_err_resp;
+  mst_port_axi_req_t axi_err_req;
+  mst_port_axi_rsp_t axi_err_resp;
 
   axi_err_slv #(
     .AxiIdWidth(AxiIdWidth          ),
     .Resp      (axi_pkg::RESP_SLVERR),
-    .axi_req_t (axi_mst_req_t       ),
-    .axi_resp_t(axi_mst_resp_t      )
+    .axi_req_t (mst_port_axi_req_t  ),
+    .axi_rsp_t (mst_port_axi_rsp_t  )
   ) i_axi_err_slv (
     .clk_i     (clk_i       ),
     .rst_ni    (rst_ni      ),
@@ -206,18 +206,18 @@ module axi_dw_upsizer #(
   logic                   mst_req_aw_err;
 
   axi_demux #(
-    .AxiIdWidth (AxiIdWidth    ),
-    .AxiLookBits(AxiIdWidth    ),
-    .aw_chan_t  (aw_chan_t     ),
-    .w_chan_t   (mst_w_chan_t  ),
-    .b_chan_t   (b_chan_t      ),
-    .ar_chan_t  (ar_chan_t     ),
-    .r_chan_t   (mst_r_chan_t  ),
-    .axi_req_t  (axi_mst_req_t ),
-    .axi_resp_t (axi_mst_resp_t),
-    .NoMstPorts (2             ),
-    .MaxTrans   (AxiMaxReads   ),
-    .SpillAw    (1'b1          ) // Required to break dependency between AW and W channels
+    .AxiIdWidth (AxiIdWidth        ),
+    .AxiLookBits(AxiIdWidth        ),
+    .aw_chan_t  (aw_chan_t         ),
+    .w_chan_t   (mst_w_chan_t      ),
+    .b_chan_t   (b_chan_t          ),
+    .ar_chan_t  (ar_chan_t         ),
+    .r_chan_t   (mst_r_chan_t      ),
+    .axi_req_t  (mst_port_axi_req_t),
+    .axi_rsp_t  (mst_port_axi_rsp_t),
+    .NoMstPorts (2                 ),
+    .MaxTrans   (AxiMaxReads       ),
+    .SpillAw    (1'b1              ) // Required to break dependency between AW and W channels
   ) i_axi_demux (
     .clk_i          (clk_i                      ),
     .rst_ni         (rst_ni                     ),

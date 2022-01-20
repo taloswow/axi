@@ -26,42 +26,42 @@
 
 module axi_mux #(
   // AXI parameter and channel types
-  parameter int unsigned SlvAxiIDWidth = 32'd0, // AXI ID width, slave ports
-  parameter type         slv_aw_chan_t = logic, // AW Channel Type, slave ports
-  parameter type         mst_aw_chan_t = logic, // AW Channel Type, master port
-  parameter type         w_chan_t      = logic, //  W Channel Type, all ports
-  parameter type         slv_b_chan_t  = logic, //  B Channel Type, slave ports
-  parameter type         mst_b_chan_t  = logic, //  B Channel Type, master port
-  parameter type         slv_ar_chan_t = logic, // AR Channel Type, slave ports
-  parameter type         mst_ar_chan_t = logic, // AR Channel Type, master port
-  parameter type         slv_r_chan_t  = logic, //  R Channel Type, slave ports
-  parameter type         mst_r_chan_t  = logic, //  R Channel Type, master port
-  parameter type         slv_req_t     = logic, // Slave port request type
-  parameter type         slv_resp_t    = logic, // Slave port response type
-  parameter type         mst_req_t     = logic, // Master ports request type
-  parameter type         mst_resp_t    = logic, // Master ports response type
-  parameter int unsigned NoSlvPorts    = 32'd0, // Number of slave ports
+  parameter int unsigned SlvAxiIDWidth      = 32'd0, // AXI ID width, slave ports
+  parameter type         slv_aw_chan_t      = logic, // AW Channel Type, slave ports
+  parameter type         mst_aw_chan_t      = logic, // AW Channel Type, master port
+  parameter type         w_chan_t           = logic, //  W Channel Type, all ports
+  parameter type         slv_b_chan_t       = logic, //  B Channel Type, slave ports
+  parameter type         mst_b_chan_t       = logic, //  B Channel Type, master port
+  parameter type         slv_ar_chan_t      = logic, // AR Channel Type, slave ports
+  parameter type         mst_ar_chan_t      = logic, // AR Channel Type, master port
+  parameter type         slv_r_chan_t       = logic, //  R Channel Type, slave ports
+  parameter type         mst_r_chan_t       = logic, //  R Channel Type, master port
+  parameter type         slv_port_axi_req_t = logic, // Slave port request type
+  parameter type         slv_port_axi_rsp_t = logic, // Slave port response type
+  parameter type         mst_port_axi_req_t = logic, // Master ports request type
+  parameter type         mst_port_axi_rsp_t = logic, // Master ports response type
+  parameter int unsigned NoSlvPorts         = 32'd0, // Number of slave ports
   // Maximum number of outstanding transactions per write
-  parameter int unsigned MaxWTrans     = 32'd8,
+  parameter int unsigned MaxWTrans          = 32'd8,
   // If enabled, this multiplexer is purely combinatorial
-  parameter bit          FallThrough   = 1'b0,
+  parameter bit          FallThrough        = 1'b0,
   // add spill register on write master ports, adds a cycle latency on write channels
-  parameter bit          SpillAw       = 1'b1,
-  parameter bit          SpillW        = 1'b0,
-  parameter bit          SpillB        = 1'b0,
+  parameter bit          SpillAw            = 1'b1,
+  parameter bit          SpillW             = 1'b0,
+  parameter bit          SpillB             = 1'b0,
   // add spill register on read master ports, adds a cycle latency on read channels
-  parameter bit          SpillAr       = 1'b1,
-  parameter bit          SpillR        = 1'b0
+  parameter bit          SpillAr            = 1'b1,
+  parameter bit          SpillR             = 1'b0
 ) (
-  input  logic                       clk_i,    // Clock
-  input  logic                       rst_ni,   // Asynchronous reset active low
-  input  logic                       test_i,   // Test Mode enable
+  input  logic                               clk_i,    // Clock
+  input  logic                               rst_ni,   // Asynchronous reset active low
+  input  logic                               test_i,   // Test Mode enable
   // slave ports (AXI inputs), connect master modules here
-  input  slv_req_t  [NoSlvPorts-1:0] slv_reqs_i,
-  output slv_resp_t [NoSlvPorts-1:0] slv_resps_o,
+  input  slv_port_axi_req_t [NoSlvPorts-1:0] slv_reqs_i,
+  output slv_port_axi_rsp_t [NoSlvPorts-1:0] slv_resps_o,
   // master port (AXI outputs), connect slave modules here
-  output mst_req_t                   mst_req_o,
-  input  mst_resp_t                  mst_resp_i
+  output mst_port_axi_req_t                  mst_req_o,
+  input  mst_port_axi_rsp_t                  mst_resp_i
 );
 
   localparam int unsigned MstIdxBits    = $clog2(NoSlvPorts);
@@ -468,16 +468,16 @@ module axi_mux_intf #(
   `AXI_TYPEDEF_R_CHAN_T(slv_r_chan_t, data_t, slv_id_t, user_t)
   `AXI_TYPEDEF_R_CHAN_T(mst_r_chan_t, data_t, mst_id_t, user_t)
 
-  `AXI_TYPEDEF_REQ_T(slv_req_t, slv_aw_chan_t, w_chan_t, slv_ar_chan_t)
-  `AXI_TYPEDEF_RESP_T(slv_resp_t, slv_b_chan_t, slv_r_chan_t)
+  `AXI_TYPEDEF_REQ_T(slv_port_axi_req_t, slv_aw_chan_t, w_chan_t, slv_ar_chan_t)
+  `AXI_TYPEDEF_RSP_T(slv_port_axi_rsp_t, slv_b_chan_t, slv_r_chan_t)
 
-  `AXI_TYPEDEF_REQ_T(mst_req_t, mst_aw_chan_t, w_chan_t, mst_ar_chan_t)
-  `AXI_TYPEDEF_RESP_T(mst_resp_t, mst_b_chan_t, mst_r_chan_t)
+  `AXI_TYPEDEF_REQ_T(mst_port_axi_req_t, mst_aw_chan_t, w_chan_t, mst_ar_chan_t)
+  `AXI_TYPEDEF_RSP_T(mst_port_axi_rsp_t, mst_b_chan_t, mst_r_chan_t)
 
-  slv_req_t  [NO_SLV_PORTS-1:0] slv_reqs;
-  slv_resp_t [NO_SLV_PORTS-1:0] slv_resps;
-  mst_req_t                     mst_req;
-  mst_resp_t                    mst_resp;
+  slv_port_axi_req_t [NO_SLV_PORTS-1:0] slv_reqs;
+  slv_port_axi_rsp_t [NO_SLV_PORTS-1:0] slv_resps;
+  mst_port_axi_req_t                    mst_req;
+  mst_port_axi_rsp_t                    mst_resp;
 
   for (genvar i = 0; i < NO_SLV_PORTS; i++) begin : gen_assign_slv_ports
     `AXI_ASSIGN_TO_REQ(slv_reqs[i], slv[i])
@@ -488,28 +488,28 @@ module axi_mux_intf #(
   `AXI_ASSIGN_TO_RESP(mst_resp, mst)
 
   axi_mux #(
-    .SlvAxiIDWidth ( SLV_AXI_ID_WIDTH ),
-    .slv_aw_chan_t ( slv_aw_chan_t    ), // AW Channel Type, slave ports
-    .mst_aw_chan_t ( mst_aw_chan_t    ), // AW Channel Type, master port
-    .w_chan_t      ( w_chan_t         ), //  W Channel Type, all ports
-    .slv_b_chan_t  ( slv_b_chan_t     ), //  B Channel Type, slave ports
-    .mst_b_chan_t  ( mst_b_chan_t     ), //  B Channel Type, master port
-    .slv_ar_chan_t ( slv_ar_chan_t    ), // AR Channel Type, slave ports
-    .mst_ar_chan_t ( mst_ar_chan_t    ), // AR Channel Type, master port
-    .slv_r_chan_t  ( slv_r_chan_t     ), //  R Channel Type, slave ports
-    .mst_r_chan_t  ( mst_r_chan_t     ), //  R Channel Type, master port
-    .slv_req_t     ( slv_req_t        ),
-    .slv_resp_t    ( slv_resp_t       ),
-    .mst_req_t     ( mst_req_t        ),
-    .mst_resp_t    ( mst_resp_t       ),
-    .NoSlvPorts    ( NO_SLV_PORTS     ), // Number of slave ports
-    .MaxWTrans     ( MAX_W_TRANS      ),
-    .FallThrough   ( FALL_THROUGH     ),
-    .SpillAw       ( SPILL_AW         ),
-    .SpillW        ( SPILL_W          ),
-    .SpillB        ( SPILL_B          ),
-    .SpillAr       ( SPILL_AR         ),
-    .SpillR        ( SPILL_R          )
+    .SlvAxiIDWidth      ( SLV_AXI_ID_WIDTH   ),
+    .slv_aw_chan_t      ( slv_aw_chan_t      ), // AW Channel Type, slave ports
+    .mst_aw_chan_t      ( mst_aw_chan_t      ), // AW Channel Type, master port
+    .w_chan_t           ( w_chan_t           ), //  W Channel Type, all ports
+    .slv_b_chan_t       ( slv_b_chan_t       ), //  B Channel Type, slave ports
+    .mst_b_chan_t       ( mst_b_chan_t       ), //  B Channel Type, master port
+    .slv_ar_chan_t      ( slv_ar_chan_t      ), // AR Channel Type, slave ports
+    .mst_ar_chan_t      ( mst_ar_chan_t      ), // AR Channel Type, master port
+    .slv_r_chan_t       ( slv_r_chan_t       ), //  R Channel Type, slave ports
+    .mst_r_chan_t       ( mst_r_chan_t       ), //  R Channel Type, master port
+    .slv_port_axi_req_t ( slv_port_axi_req_t ),
+    .slv_port_axi_rsp_t ( slv_port_axi_rsp_t ),
+    .mst_port_axi_req_t ( mst_port_axi_req_t ),
+    .mst_port_axi_rsp_t ( mst_port_axi_rsp_t ),
+    .NoSlvPorts         ( NO_SLV_PORTS       ), // Number of slave ports
+    .MaxWTrans          ( MAX_W_TRANS        ),
+    .FallThrough        ( FALL_THROUGH       ),
+    .SpillAw            ( SPILL_AW           ),
+    .SpillW             ( SPILL_W            ),
+    .SpillB             ( SPILL_B            ),
+    .SpillAr            ( SPILL_AR           ),
+    .SpillR             ( SPILL_R            )
   ) i_axi_mux (
     .clk_i       ( clk_i     ), // Clock
     .rst_ni      ( rst_ni    ), // Asynchronous reset active low

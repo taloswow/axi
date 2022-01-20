@@ -24,7 +24,7 @@ module axi_demux #(
   parameter type         ar_chan_t      = logic,
   parameter type         r_chan_t       = logic,
   parameter type         axi_req_t      = logic,
-  parameter type         axi_resp_t     = logic,
+  parameter type         axi_rsp_t      = logic,
   parameter int unsigned NoMstPorts     = 32'd0,
   parameter int unsigned MaxTrans       = 32'd8,
   parameter int unsigned AxiLookBits    = 32'd3,
@@ -46,10 +46,10 @@ module axi_demux #(
   input  axi_req_t                      slv_req_i,
   input  select_t                       slv_aw_select_i,
   input  select_t                       slv_ar_select_i,
-  output axi_resp_t                     slv_resp_o,
+  output axi_rsp_t                      slv_resp_o,
   // Master Ports
   output axi_req_t    [NoMstPorts-1:0]  mst_reqs_o,
-  input  axi_resp_t   [NoMstPorts-1:0]  mst_resps_i
+  input  axi_rsp_t    [NoMstPorts-1:0]  mst_resps_i
 );
 
   localparam int unsigned IdCounterWidth = MaxTrans > 1 ? $clog2(MaxTrans) : 1;
@@ -736,12 +736,12 @@ module axi_demux_intf #(
   `AXI_TYPEDEF_AR_CHAN_T(ar_chan_t, addr_t, id_t, user_t)
   `AXI_TYPEDEF_R_CHAN_T(r_chan_t, data_t, id_t, user_t)
   `AXI_TYPEDEF_REQ_T(axi_req_t, aw_chan_t, w_chan_t, ar_chan_t)
-  `AXI_TYPEDEF_RESP_T(axi_resp_t, b_chan_t, r_chan_t)
+  `AXI_TYPEDEF_RSP_T(axi_rsp_t, b_chan_t, r_chan_t)
 
-  axi_req_t                     slv_req;
-  axi_resp_t                    slv_resp;
-  axi_req_t  [NO_MST_PORTS-1:0] mst_req;
-  axi_resp_t [NO_MST_PORTS-1:0] mst_resp;
+  axi_req_t                    slv_req;
+  axi_rsp_t                    slv_resp;
+  axi_req_t [NO_MST_PORTS-1:0] mst_req;
+  axi_rsp_t [NO_MST_PORTS-1:0] mst_resp;
 
   `AXI_ASSIGN_TO_REQ(slv_req, slv)
   `AXI_ASSIGN_FROM_RESP(slv, slv_resp)
@@ -753,13 +753,13 @@ module axi_demux_intf #(
 
   axi_demux #(
     .AxiIdWidth     ( AXI_ID_WIDTH  ), // ID Width
-    .aw_chan_t      (  aw_chan_t    ), // AW Channel Type
-    .w_chan_t       (   w_chan_t    ), //  W Channel Type
-    .b_chan_t       (   b_chan_t    ), //  B Channel Type
-    .ar_chan_t      (  ar_chan_t    ), // AR Channel Type
-    .r_chan_t       (   r_chan_t    ), //  R Channel Type
-    .axi_req_t      (  axi_req_t    ),
-    .axi_resp_t     ( axi_resp_t    ),
+    .aw_chan_t      ( aw_chan_t     ), // AW Channel Type
+    .w_chan_t       (  w_chan_t     ), //  W Channel Type
+    .b_chan_t       (  b_chan_t     ), //  B Channel Type
+    .ar_chan_t      ( ar_chan_t     ), // AR Channel Type
+    .r_chan_t       (  r_chan_t     ), //  R Channel Type
+    .axi_req_t      ( axi_req_t     ),
+    .axi_rsp_t      ( axi_rsp_t     ),
     .NoMstPorts     ( NO_MST_PORTS  ),
     .MaxTrans       ( MAX_TRANS     ),
     .AxiLookBits    ( AXI_LOOK_BITS ),

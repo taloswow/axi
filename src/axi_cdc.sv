@@ -24,26 +24,26 @@
 /// ports are in separate clock domains.  IMPORTANT: For each AXI channel, you MUST properly
 /// constrain three paths through the FIFO; see the header of `cdc_fifo_gray` for instructions.
 module axi_cdc #(
-  parameter type aw_chan_t  = logic, // AW Channel Type
-  parameter type w_chan_t   = logic, //  W Channel Type
-  parameter type b_chan_t   = logic, //  B Channel Type
-  parameter type ar_chan_t  = logic, // AR Channel Type
-  parameter type r_chan_t   = logic, //  R Channel Type
-  parameter type axi_req_t  = logic, // encapsulates request channels
-  parameter type axi_resp_t = logic, // encapsulates request channels
+  parameter type aw_chan_t = logic, // AW Channel Type
+  parameter type w_chan_t  = logic, //  W Channel Type
+  parameter type b_chan_t  = logic, //  B Channel Type
+  parameter type ar_chan_t = logic, // AR Channel Type
+  parameter type r_chan_t  = logic, //  R Channel Type
+  parameter type axi_req_t = logic, // encapsulates request channels
+  parameter type axi_rsp_t = logic, // encapsulates request channels
   /// Depth of the FIFO crossing the clock domain, given as 2**LOG_DEPTH.
   parameter int unsigned  LogDepth  = 1
 ) (
   // slave side - clocked by `src_clk_i`
-  input  logic      src_clk_i,
-  input  logic      src_rst_ni,
-  input  axi_req_t  src_req_i,
-  output axi_resp_t src_resp_o,
+  input  logic     src_clk_i,
+  input  logic     src_rst_ni,
+  input  axi_req_t src_req_i,
+  output axi_rsp_t src_resp_o,
   // master side - clocked by `dst_clk_i`
-  input  logic      dst_clk_i,
-  input  logic      dst_rst_ni,
-  output axi_req_t  dst_req_o,
-  input  axi_resp_t dst_resp_i
+  input  logic     dst_clk_i,
+  input  logic     dst_rst_ni,
+  output axi_req_t dst_req_o,
+  input  axi_rsp_t dst_resp_i
 );
 
   aw_chan_t [2**LogDepth-1:0] async_data_aw_data;
@@ -64,7 +64,7 @@ module axi_cdc #(
     .ar_chan_t  ( ar_chan_t   ),
     .r_chan_t   ( r_chan_t    ),
     .axi_req_t  ( axi_req_t   ),
-    .axi_resp_t ( axi_resp_t  ),
+    .axi_rsp_t  ( axi_rsp_t   ),
     .LogDepth   ( LogDepth    )
   ) i_axi_cdc_src (
                 .src_clk_i,
@@ -95,7 +95,7 @@ module axi_cdc #(
     .ar_chan_t  ( ar_chan_t   ),
     .r_chan_t   ( r_chan_t    ),
     .axi_req_t  ( axi_req_t   ),
-    .axi_resp_t ( axi_resp_t  ),
+    .axi_rsp_t  ( axi_rsp_t   ),
     .LogDepth   ( LogDepth    )
   ) i_axi_cdc_dst (
                 .dst_clk_i,
@@ -153,11 +153,11 @@ module axi_cdc_intf #(
   `AXI_TYPEDEF_B_CHAN_T(b_chan_t, id_t, user_t)
   `AXI_TYPEDEF_AR_CHAN_T(ar_chan_t, addr_t, id_t, user_t)
   `AXI_TYPEDEF_R_CHAN_T(r_chan_t, data_t, id_t, user_t)
-  `AXI_TYPEDEF_REQ_T(req_t, aw_chan_t, w_chan_t, ar_chan_t)
-  `AXI_TYPEDEF_RESP_T(resp_t, b_chan_t, r_chan_t)
+  `AXI_TYPEDEF_REQ_T(axi_req_t, aw_chan_t, w_chan_t, ar_chan_t)
+  `AXI_TYPEDEF_RSP_T(axi_rsp_t, b_chan_t, r_chan_t)
 
-  req_t  src_req,  dst_req;
-  resp_t src_resp, dst_resp;
+  axi_req_t src_req,  dst_req;
+  axi_rsp_t src_resp, dst_resp;
 
   `AXI_ASSIGN_TO_REQ(src_req, src)
   `AXI_ASSIGN_FROM_RESP(src, src_resp)
@@ -171,8 +171,8 @@ module axi_cdc_intf #(
     .b_chan_t   ( b_chan_t  ),
     .ar_chan_t  ( ar_chan_t ),
     .r_chan_t   ( r_chan_t  ),
-    .axi_req_t  ( req_t     ),
-    .axi_resp_t ( resp_t    ),
+    .axi_req_t  ( axi_req_t ),
+    .axi_rsp_t  ( axi_rsp_t ),
     .LogDepth   ( LOG_DEPTH )
   ) i_axi_cdc (
     .src_clk_i,
@@ -211,11 +211,11 @@ module axi_lite_cdc_intf #(
   `AXI_LITE_TYPEDEF_B_CHAN_T(b_chan_t)
   `AXI_LITE_TYPEDEF_AR_CHAN_T(ar_chan_t, addr_t)
   `AXI_LITE_TYPEDEF_R_CHAN_T(r_chan_t, data_t)
-  `AXI_LITE_TYPEDEF_REQ_T(req_t, aw_chan_t, w_chan_t, ar_chan_t)
-  `AXI_LITE_TYPEDEF_RESP_T(resp_t, b_chan_t, r_chan_t)
+  `AXI_LITE_TYPEDEF_REQ_T(axi_lite_req_t, aw_chan_t, w_chan_t, ar_chan_t)
+  `AXI_LITE_TYPEDEF_RSP_T(axi_lite_rsp_t, b_chan_t, r_chan_t)
 
-  req_t  src_req,  dst_req;
-  resp_t src_resp, dst_resp;
+  axi_lite_req_t src_req,  dst_req;
+  axi_lite_rsp_t src_resp, dst_resp;
 
   `AXI_LITE_ASSIGN_TO_REQ(src_req, src)
   `AXI_LITE_ASSIGN_FROM_RESP(src, src_resp)
@@ -224,14 +224,14 @@ module axi_lite_cdc_intf #(
   `AXI_LITE_ASSIGN_TO_RESP(dst_resp, dst)
 
   axi_cdc #(
-    .aw_chan_t  ( aw_chan_t ),
-    .w_chan_t   ( w_chan_t  ),
-    .b_chan_t   ( b_chan_t  ),
-    .ar_chan_t  ( ar_chan_t ),
-    .r_chan_t   ( r_chan_t  ),
-    .axi_req_t  ( req_t     ),
-    .axi_resp_t ( resp_t    ),
-    .LogDepth   ( LOG_DEPTH )
+    .aw_chan_t  ( aw_chan_t      ),
+    .w_chan_t   ( w_chan_t       ),
+    .b_chan_t   ( b_chan_t       ),
+    .ar_chan_t  ( ar_chan_t      ),
+    .r_chan_t   ( r_chan_t       ),
+    .axi_req_t  ( axi_lite_req_t ),
+    .axi_rsp_t  ( axi_lite_rsp_t ),
+    .LogDepth   ( LOG_DEPTH      )
   ) i_axi_cdc (
     .src_clk_i,
     .src_rst_ni,

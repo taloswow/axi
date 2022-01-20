@@ -29,20 +29,20 @@ module axi_serializer #(
   /// AXI4+ATOP request struct definition.
   parameter type         axi_req_t    = logic,
   /// AXI4+ATOP response struct definition.
-  parameter type         axi_resp_t   = logic
+  parameter type         axi_rsp_t    = logic
 ) (
   /// Clock
-  input  logic      clk_i,
+  input  logic     clk_i,
   /// Asynchronous reset, active low
-  input  logic      rst_ni,
+  input  logic     rst_ni,
   /// Slave port request
-  input  axi_req_t  slv_req_i,
+  input  axi_req_t slv_req_i,
   /// Slave port response
-  output axi_resp_t slv_resp_o,
+  output axi_rsp_t slv_resp_o,
   /// Master port request
-  output axi_req_t  mst_req_o,
+  output axi_req_t mst_req_o,
   /// Master port response
-  input  axi_resp_t mst_resp_i
+  input  axi_rsp_t mst_resp_i
 );
 
   typedef logic [AxiIdWidth-1:0] id_t;
@@ -255,9 +255,9 @@ module axi_serializer_intf #(
   `AXI_TYPEDEF_AR_CHAN_T(ar_chan_t, addr_t, id_t, user_t)
   `AXI_TYPEDEF_R_CHAN_T(r_chan_t, data_t, id_t, user_t)
   `AXI_TYPEDEF_REQ_T(axi_req_t, aw_chan_t, w_chan_t, ar_chan_t)
-  `AXI_TYPEDEF_RESP_T(axi_resp_t, b_chan_t, r_chan_t)
-  axi_req_t  slv_req,  mst_req;
-  axi_resp_t slv_resp, mst_resp;
+  `AXI_TYPEDEF_RSP_T(axi_rsp_t, b_chan_t, r_chan_t)
+  axi_req_t slv_req,  mst_req;
+  axi_rsp_t slv_resp, mst_resp;
   `AXI_ASSIGN_TO_REQ(slv_req, slv)
   `AXI_ASSIGN_FROM_RESP(slv, slv_resp)
   `AXI_ASSIGN_FROM_REQ(mst, mst_req)
@@ -268,7 +268,7 @@ module axi_serializer_intf #(
     .MaxWriteTxns ( MAX_WRITE_TXNS ),
     .AxiIdWidth   ( AXI_ID_WIDTH   ),
     .axi_req_t    ( axi_req_t      ),
-    .axi_resp_t   ( axi_resp_t     )
+    .axi_rsp_t    ( axi_rsp_t      )
   ) i_axi_serializer (
     .clk_i,
     .rst_ni,

@@ -32,13 +32,13 @@ module axi_cdc_src #(
   parameter type ar_chan_t = logic,
   parameter type r_chan_t = logic,
   parameter type axi_req_t = logic,
-  parameter type axi_resp_t = logic
+  parameter type axi_rsp_t = logic
 ) (
   // synchronous slave port - clocked by `src_clk_i`
   input  logic                        src_clk_i,
   input  logic                        src_rst_ni,
   input  axi_req_t                    src_req_i,
-  output axi_resp_t                   src_resp_o,
+  output axi_rsp_t                    src_resp_o,
   // asynchronous master port
   output aw_chan_t  [2**LogDepth-1:0] async_data_master_aw_data_o,
   output logic           [LogDepth:0] async_data_master_aw_wptr_o,
@@ -156,11 +156,11 @@ module axi_cdc_src_intf #(
   `AXI_TYPEDEF_B_CHAN_T(b_chan_t, id_t, user_t)
   `AXI_TYPEDEF_AR_CHAN_T(ar_chan_t, addr_t, id_t, user_t)
   `AXI_TYPEDEF_R_CHAN_T(r_chan_t, data_t, id_t, user_t)
-  `AXI_TYPEDEF_REQ_T(req_t, aw_chan_t, w_chan_t, ar_chan_t)
-  `AXI_TYPEDEF_RESP_T(resp_t, b_chan_t, r_chan_t)
+  `AXI_TYPEDEF_REQ_T(axi_req_t, aw_chan_t, w_chan_t, ar_chan_t)
+  `AXI_TYPEDEF_RSP_T(axi_rsp_t, b_chan_t, r_chan_t)
 
-  req_t  src_req;
-  resp_t src_resp;
+  axi_req_t src_req;
+  axi_rsp_t src_resp;
 
   `AXI_ASSIGN_TO_REQ(src_req, src)
   `AXI_ASSIGN_FROM_RESP(src, src_resp)
@@ -171,8 +171,8 @@ module axi_cdc_src_intf #(
     .b_chan_t   ( b_chan_t  ),
     .ar_chan_t  ( ar_chan_t ),
     .r_chan_t   ( r_chan_t  ),
-    .axi_req_t  ( req_t     ),
-    .axi_resp_t ( resp_t    ),
+    .axi_req_t  ( axi_req_t ),
+    .axi_rsp_t  ( axi_rsp_t ),
     .LogDepth   ( LOG_DEPTH )
   ) i_axi_cdc_src (
     .src_clk_i,
@@ -221,24 +221,24 @@ module axi_lite_cdc_src_intf #(
   `AXI_LITE_TYPEDEF_B_CHAN_T(b_chan_t)
   `AXI_LITE_TYPEDEF_AR_CHAN_T(ar_chan_t, addr_t)
   `AXI_LITE_TYPEDEF_R_CHAN_T(r_chan_t, data_t)
-  `AXI_LITE_TYPEDEF_REQ_T(req_t, aw_chan_t, w_chan_t, ar_chan_t)
-  `AXI_LITE_TYPEDEF_RESP_T(resp_t, b_chan_t, r_chan_t)
+  `AXI_LITE_TYPEDEF_REQ_T(axi_lite_req_t, aw_chan_t, w_chan_t, ar_chan_t)
+  `AXI_LITE_TYPEDEF_RSP_T(axi_lite_rsp_t, b_chan_t, r_chan_t)
 
-  req_t  src_req;
-  resp_t src_resp;
+  axi_lite_req_t src_req;
+  axi_lite_rsp_t src_resp;
 
   `AXI_LITE_ASSIGN_TO_REQ(src_req, src)
   `AXI_LITE_ASSIGN_FROM_RESP(src, src_resp)
 
   axi_cdc_src #(
-    .aw_chan_t  ( aw_chan_t ),
-    .w_chan_t   ( w_chan_t  ),
-    .b_chan_t   ( b_chan_t  ),
-    .ar_chan_t  ( ar_chan_t ),
-    .r_chan_t   ( r_chan_t  ),
-    .axi_req_t  ( req_t     ),
-    .axi_resp_t ( resp_t    ),
-    .LogDepth   ( LOG_DEPTH )
+    .aw_chan_t  ( aw_chan_t      ),
+    .w_chan_t   ( w_chan_t       ),
+    .b_chan_t   ( b_chan_t       ),
+    .ar_chan_t  ( ar_chan_t      ),
+    .r_chan_t   ( r_chan_t       ),
+    .axi_req_t  ( axi_lite_req_t ),
+    .axi_rsp_t  ( axi_lite_rsp_t ),
+    .LogDepth   ( LOG_DEPTH      )
   ) i_axi_cdc_src (
     .src_clk_i,
     .src_rst_ni,

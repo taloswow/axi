@@ -16,7 +16,7 @@ This table describes the parameters of the module.
 | `AxiAddrWidth` | `int unsigned` | The AXI4-Lite address width on the AW and AR channels                                        |
 | `AxiDataWidth` | `int unsigned` | The AXI4-Lite data width on the W and R channels                                             |
 | `req_lite_t`   | `type`         | In accordance with the `AXI_LITE_TYPEDEF_REQ_T` macro                                        |
-| `resp_lite_t`  | `type`         | In accordance with the `AXI_LITE_TYPEDEF_RESP_T` macro                                       |
+| `rsp_lite_t`   | `type`         | In accordance with the `AXI_LITE_TYPEDEF_RSP_T` macro                                        |
 
 
 ## Module Ports

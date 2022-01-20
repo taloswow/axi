@@ -36,18 +36,18 @@ module axi_burst_splitter #(
   parameter int unsigned IdWidth      = 32'd0,
   parameter int unsigned UserWidth    = 32'd0,
   parameter type         axi_req_t    = logic,
-  parameter type         axi_resp_t   = logic
+  parameter type         axi_rsp_t    = logic
 ) (
-  input  logic      clk_i,
-  input  logic      rst_ni,
+  input  logic     clk_i,
+  input  logic     rst_ni,
 
   // Input / Slave Port
-  input  axi_req_t  slv_req_i,
-  output axi_resp_t slv_resp_o,
+  input  axi_req_t slv_req_i,
+  output axi_rsp_t slv_resp_o,
 
   // Output / Master Port
-  output axi_req_t  mst_req_o,
-  input  axi_resp_t mst_resp_i
+  output axi_req_t mst_req_o,
+  input  axi_rsp_t mst_resp_i
 );
 
   typedef logic [AddrWidth-1:0]   addr_t;
@@ -62,8 +62,8 @@ module axi_burst_splitter #(
   `AXI_TYPEDEF_R_CHAN_T(r_chan_t, data_t, id_t, user_t)
 
   // Demultiplex between supported and unsupported transactions.
-  axi_req_t   act_req,  unsupported_req;
-  axi_resp_t  act_resp, unsupported_resp;
+  axi_req_t  act_req,  unsupported_req;
+  axi_rsp_t  act_resp, unsupported_resp;
   logic   sel_aw_unsupported, sel_ar_unsupported;
   localparam int unsigned MaxTxns = (MaxReadTxns > MaxWriteTxns) ? MaxReadTxns : MaxWriteTxns;
   axi_demux #(
@@ -74,7 +74,7 @@ module axi_burst_splitter #(
     .ar_chan_t    ( ar_chan_t   ),
     .r_chan_t     ( r_chan_t    ),
     .axi_req_t    ( axi_req_t   ),
-    .axi_resp_t   ( axi_resp_t  ),
+    .axi_rsp_t    ( axi_rsp_t   ),
     .NoMstPorts   ( 2           ),
     .MaxTrans     ( MaxTxns     ),
     .AxiLookBits  ( IdWidth     ),
@@ -120,7 +120,7 @@ module axi_burst_splitter #(
   axi_err_slv #(
     .AxiIdWidth ( IdWidth               ),
     .axi_req_t  ( axi_req_t             ),
-    .axi_resp_t ( axi_resp_t            ),
+    .axi_rsp_t  ( axi_rsp_t             ),
     .Resp       ( axi_pkg::RESP_SLVERR  ),
     .ATOPs      ( 1'b0                  ),  // The burst splitter does not support ATOPs.
     .MaxTrans   ( 1                     )   // Splitting bursts implies a low-performance bus.

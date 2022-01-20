@@ -43,17 +43,17 @@ module tb_axi_sim_mem #(
   `AXI_TYPEDEF_AR_CHAN_T(ar_t, addr_t, id_t, user_t)
   `AXI_TYPEDEF_R_CHAN_T(r_t, data_t, id_t, user_t)
   `AXI_TYPEDEF_REQ_T(axi_req_t, aw_t, w_t, ar_t)
-  `AXI_TYPEDEF_RESP_T(axi_resp_t, b_t, r_t)
+  `AXI_TYPEDEF_RSP_T(axi_rsp_t, b_t, r_t)
 
   axi_req_t req;
-  axi_resp_t rsp;
+  axi_rsp_t rsp;
   axi_sim_mem #(
     .AddrWidth          (TbAddrWidth),
     .DataWidth          (TbDataWidth),
     .IdWidth            (TbIdWidth),
     .UserWidth          (TbUserWidth),
     .axi_req_t          (axi_req_t),
-    .axi_resp_t         (axi_resp_t),
+    .axi_rsp_t          (axi_rsp_t),
     .WarnUninitialized  (TbWarnUninitialized),
     .ApplDelay          (TbApplDelay),
     .AcqDelay           (TbAcqDelay)

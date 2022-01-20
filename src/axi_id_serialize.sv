@@ -48,26 +48,26 @@ module axi_id_serialize #(
   /// User width of both AXI4+ATOP ports
   parameter int unsigned AxiUserWidth = 32'd0,
   /// Request struct type of the AXI4+ATOP slave port
-  parameter type slv_req_t = logic,
+  parameter type slv_port_axi_req_t = logic,
   /// Response struct type of the AXI4+ATOP slave port
-  parameter type slv_resp_t = logic,
+  parameter type slv_port_axi_rsp_t = logic,
   /// Request struct type of the AXI4+ATOP master port
-  parameter type mst_req_t = logic,
+  parameter type mst_port_axi_req_t = logic,
   /// Response struct type of the AXI4+ATOP master port
-  parameter type mst_resp_t = logic
+  parameter type mst_port_axi_rsp_t = logic
 ) (
   /// Rising-edge clock of both ports
-  input  logic      clk_i,
+  input  logic              clk_i,
   /// Asynchronous reset, active low
-  input  logic      rst_ni,
+  input  logic              rst_ni,
   /// Slave port request
-  input  slv_req_t  slv_req_i,
+  input  slv_port_axi_req_t slv_req_i,
   /// Slave port response
-  output slv_resp_t slv_resp_o,
+  output slv_port_axi_rsp_t slv_resp_o,
   /// Master port request
-  output mst_req_t  mst_req_o,
+  output mst_port_axi_req_t mst_req_o,
   /// Master port response
-  input  mst_resp_t mst_resp_i
+  input  mst_port_axi_rsp_t mst_resp_i
 );
 
   /// Number of bits of the slave port ID that determine the mapping to the master port ID
@@ -118,7 +118,7 @@ module axi_id_serialize #(
   /// AXI Requests from serializer
   `AXI_TYPEDEF_REQ_T(ser_req_t, ser_aw_t, w_t, ser_ar_t)
   /// AXI responses to serializer
-  `AXI_TYPEDEF_RESP_T(ser_resp_t, ser_b_t, ser_r_t)
+  `AXI_TYPEDEF_RSP_T(ser_rsp_t, ser_b_t, ser_r_t)
 
   /// AW channel after the multiplexer
   `AXI_TYPEDEF_AW_CHAN_T(mux_aw_t, addr_t, mux_id_t, user_t)
@@ -131,7 +131,7 @@ module axi_id_serialize #(
   /// AXI requests from the multiplexer
   `AXI_TYPEDEF_REQ_T(mux_req_t, mux_aw_t, w_t, mux_ar_t)
   /// AXI responses to the multiplexer
-  `AXI_TYPEDEF_RESP_T(mux_resp_t, mux_b_t, mux_r_t)
+  `AXI_TYPEDEF_RSP_T(mux_rsp_t, mux_b_t, mux_r_t)
 
   /// AW channel at master port
   `AXI_TYPEDEF_AW_CHAN_T(mst_aw_t, addr_t, mst_id_t, user_t)
@@ -146,8 +146,8 @@ module axi_id_serialize #(
   assign slv_aw_select = select_t'(slv_req_i.aw.id % AxiMstPortMaxUniqIds); // TODO: customizable base
   assign slv_ar_select = select_t'(slv_req_i.ar.id % AxiMstPortMaxUniqIds);
 
-  slv_req_t  [AxiMstPortMaxUniqIds-1:0] to_serializer_reqs;
-  slv_resp_t [AxiMstPortMaxUniqIds-1:0] to_serializer_resps;
+  slv_port_axi_req_t [AxiMstPortMaxUniqIds-1:0] to_serializer_reqs;
+  slv_port_axi_rsp_t [AxiMstPortMaxUniqIds-1:0] to_serializer_resps;
 
   axi_demux #(
     .AxiIdWidth  ( AxiSlvPortIdWidth    ),
@@ -156,8 +156,8 @@ module axi_id_serialize #(
     .b_chan_t    ( slv_b_t              ),
     .ar_chan_t   ( slv_ar_t             ),
     .r_chan_t    ( slv_r_t              ),
-    .axi_req_t   ( slv_req_t            ),
-    .axi_resp_t  ( slv_resp_t           ),
+    .axi_req_t   ( slv_port_axi_req_t   ),
+    .axi_rsp_t   ( slv_port_axi_rsp_t   ),
     .NoMstPorts  ( AxiMstPortMaxUniqIds ),
     .MaxTrans    ( AxiSlvPortMaxTxns    ),
     .AxiLookBits ( AxiSlvPortIdWidth    ),
@@ -179,18 +179,18 @@ module axi_id_serialize #(
     .mst_resps_i     ( to_serializer_resps )
   );
 
-  slv_req_t  [AxiMstPortMaxUniqIds-1:0] tmp_serializer_reqs;
-  slv_resp_t [AxiMstPortMaxUniqIds-1:0] tmp_serializer_resps;
-  ser_req_t  [AxiMstPortMaxUniqIds-1:0] from_serializer_reqs;
-  ser_resp_t [AxiMstPortMaxUniqIds-1:0] from_serializer_resps;
+  slv_port_axi_req_t [AxiMstPortMaxUniqIds-1:0] tmp_serializer_reqs;
+  slv_port_axi_rsp_t [AxiMstPortMaxUniqIds-1:0] tmp_serializer_resps;
+  ser_req_t [AxiMstPortMaxUniqIds-1:0] from_serializer_reqs;
+  ser_rsp_t [AxiMstPortMaxUniqIds-1:0] from_serializer_resps;
 
   for (genvar i = 0; i < AxiMstPortMaxUniqIds; i++) begin : gen_serializers
     axi_serializer #(
       .MaxReadTxns  ( AxiMstPortMaxTxnsPerId  ),
       .MaxWriteTxns ( AxiMstPortMaxTxnsPerId  ),
       .AxiIdWidth   ( AxiSlvPortIdWidth       ),
-      .axi_req_t    ( slv_req_t               ),
-      .axi_resp_t   ( slv_resp_t              )
+      .axi_req_t    ( slv_port_axi_req_t      ),
+      .axi_rsp_t    ( slv_port_axi_rsp_t      )
     ) i_axi_serializer (
       .clk_i,
       .rst_ni,
@@ -211,32 +211,32 @@ module axi_id_serialize #(
     end
   end
 
-  mux_req_t  axi_mux_req;
-  mux_resp_t axi_mux_resp;
+  mux_req_t axi_mux_req;
+  mux_rsp_t axi_mux_resp;
 
   axi_mux #(
-    .SlvAxiIDWidth ( 32'd1                  ),
-    .slv_aw_chan_t ( ser_aw_t               ),
-    .mst_aw_chan_t ( mux_aw_t               ),
-    .w_chan_t      ( w_t                    ),
-    .slv_b_chan_t  ( ser_b_t                ),
-    .mst_b_chan_t  ( mux_b_t                ),
-    .slv_ar_chan_t ( ser_ar_t               ),
-    .mst_ar_chan_t ( mux_ar_t               ),
-    .slv_r_chan_t  ( ser_r_t                ),
-    .mst_r_chan_t  ( mux_r_t                ),
-    .slv_req_t     ( ser_req_t              ),
-    .slv_resp_t    ( ser_resp_t             ),
-    .mst_req_t     ( mux_req_t              ),
-    .mst_resp_t    ( mux_resp_t             ),
-    .NoSlvPorts    ( AxiMstPortMaxUniqIds   ),
-    .MaxWTrans     ( AxiMstPortMaxTxnsPerId ),
-    .FallThrough   ( 1'b0                   ),
-    .SpillAw       ( 1'b1                   ),
-    .SpillW        ( 1'b0                   ),
-    .SpillB        ( 1'b0                   ),
-    .SpillAr       ( 1'b1                   ),
-    .SpillR        ( 1'b0                   )
+    .SlvAxiIDWidth      ( 32'd1                  ),
+    .slv_aw_chan_t      ( ser_aw_t               ),
+    .mst_aw_chan_t      ( mux_aw_t               ),
+    .w_chan_t           ( w_t                    ),
+    .slv_b_chan_t       ( ser_b_t                ),
+    .mst_b_chan_t       ( mux_b_t                ),
+    .slv_ar_chan_t      ( ser_ar_t               ),
+    .mst_ar_chan_t      ( mux_ar_t               ),
+    .slv_r_chan_t       ( ser_r_t                ),
+    .mst_r_chan_t       ( mux_r_t                ),
+    .slv_port_axi_req_t ( ser_req_t              ),
+    .slv_port_axi_rsp_t ( ser_rsp_t             ),
+    .mst_port_axi_req_t ( mux_req_t              ),
+    .mst_port_axi_rsp_t ( mux_rsp_t             ),
+    .NoSlvPorts         ( AxiMstPortMaxUniqIds   ),
+    .MaxWTrans          ( AxiMstPortMaxTxnsPerId ),
+    .FallThrough        ( 1'b0                   ),
+    .SpillAw            ( 1'b1                   ),
+    .SpillW             ( 1'b0                   ),
+    .SpillB             ( 1'b0                   ),
+    .SpillAr            ( 1'b1                   ),
+    .SpillR             ( 1'b0                   )
   ) i_axi_mux (
     .clk_i,
     .rst_ni,
@@ -365,20 +365,20 @@ module axi_id_serialize_intf #(
   `AXI_TYPEDEF_B_CHAN_T(slv_b_t, slv_id_t, user_t)
   `AXI_TYPEDEF_AR_CHAN_T(slv_ar_t, addr_t, slv_id_t, user_t)
   `AXI_TYPEDEF_R_CHAN_T(slv_r_t, data_t, slv_id_t, user_t)
-  `AXI_TYPEDEF_REQ_T(slv_req_t, slv_aw_t, w_t, slv_ar_t)
-  `AXI_TYPEDEF_RESP_T(slv_resp_t, slv_b_t, slv_r_t)
+  `AXI_TYPEDEF_REQ_T(slv_port_axi_req_t, slv_aw_t, w_t, slv_ar_t)
+  `AXI_TYPEDEF_RSP_T(slv_port_axi_rsp_t, slv_b_t, slv_r_t)
 
   `AXI_TYPEDEF_AW_CHAN_T(mst_aw_t, addr_t, mst_id_t, user_t)
   `AXI_TYPEDEF_B_CHAN_T(mst_b_t, mst_id_t, user_t)
   `AXI_TYPEDEF_AR_CHAN_T(mst_ar_t, addr_t, mst_id_t, user_t)
   `AXI_TYPEDEF_R_CHAN_T(mst_r_t, data_t, mst_id_t, user_t)
-  `AXI_TYPEDEF_REQ_T(mst_req_t, mst_aw_t, w_t, mst_ar_t)
-  `AXI_TYPEDEF_RESP_T(mst_resp_t, mst_b_t, mst_r_t)
+  `AXI_TYPEDEF_REQ_T(mst_port_axi_req_t, mst_aw_t, w_t, mst_ar_t)
+  `AXI_TYPEDEF_RSP_T(mst_port_axi_rsp_t, mst_b_t, mst_r_t)
 
-  slv_req_t  slv_req;
-  slv_resp_t slv_resp;
-  mst_req_t  mst_req;
-  mst_resp_t mst_resp;
+  slv_port_axi_req_t slv_req;
+  slv_port_axi_rsp_t slv_resp;
+  mst_port_axi_req_t mst_req;
+  mst_port_axi_rsp_t mst_resp;
 
   `AXI_ASSIGN_TO_REQ(slv_req, slv)
   `AXI_ASSIGN_FROM_RESP(slv, slv_resp)
@@ -394,10 +394,10 @@ module axi_id_serialize_intf #(
     .AxiAddrWidth           ( AXI_ADDR_WIDTH                ),
     .AxiDataWidth           ( AXI_DATA_WIDTH                ),
     .AxiUserWidth           ( AXI_USER_WIDTH                ),
-    .slv_req_t              ( slv_req_t                     ),
-    .slv_resp_t             ( slv_resp_t                    ),
-    .mst_req_t              ( mst_req_t                     ),
-    .mst_resp_t             ( mst_resp_t                    )
+    .slv_port_axi_req_t     ( slv_port_axi_req_t            ),
+    .slv_port_axi_rsp_t     ( slv_port_axi_rsp_t            ),
+    .mst_port_axi_req_t     ( mst_port_axi_req_t            ),
+    .mst_port_axi_rsp_t     ( mst_port_axi_rsp_t            )
   ) i_axi_id_serialize (
     .clk_i,
     .rst_ni,

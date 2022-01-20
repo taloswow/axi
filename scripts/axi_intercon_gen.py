@@ -377,10 +377,10 @@ class AxiIntercon:
   `AXI_TYPEDEF_R_CHAN_T(r_chan_mst_t, data_t, id_mst_t, user_t)
   `AXI_TYPEDEF_R_CHAN_T(r_chan_slv_t, data_t, id_slv_t, user_t)
 
-  `AXI_TYPEDEF_REQ_T(slv_req_t, aw_chan_mst_t, w_chan_t, ar_chan_mst_t)
-  `AXI_TYPEDEF_RESP_T(slv_resp_t, b_chan_mst_t, r_chan_mst_t)
-  `AXI_TYPEDEF_REQ_T(mst_req_t, aw_chan_slv_t, w_chan_t, ar_chan_slv_t)
-  `AXI_TYPEDEF_RESP_T(mst_resp_t, b_chan_slv_t, r_chan_slv_t)
+  `AXI_TYPEDEF_REQ_T(slv_port_axi_req_t, aw_chan_mst_t, w_chan_t, ar_chan_mst_t)
+  `AXI_TYPEDEF_RSP_T(slv_port_axi_rsp_t, b_chan_mst_t, r_chan_mst_t)
+  `AXI_TYPEDEF_REQ_T(mst_port_axi_req_t, aw_chan_slv_t, w_chan_t, ar_chan_slv_t)
+  `AXI_TYPEDEF_RSP_T(mst_port_axi_rsp_t, b_chan_slv_t, r_chan_slv_t)
 
 """
 
@@ -397,11 +397,11 @@ class AxiIntercon:
         raw += ',\n'.join(rules)
         raw +=   "};\n"
 
-        raw += "   slv_req_t  [{}:0] masters_req;\n".format(nm-1)
-        raw += "   slv_resp_t [{}:0] masters_resp;\n".format(nm-1)
+        raw += "   slv_port_axi_req_t [{}:0] masters_req;\n".format(nm-1)
+        raw += "   slv_port_axi_rsp_t [{}:0] masters_resp;\n".format(nm-1)
 
-        raw += "   mst_req_t  [{}:0] slaves_req;\n".format(ns-1)
-        raw += "   mst_resp_t [{}:0] slaves_resp;\n".format(ns-1)
+        raw += "   mst_port_axi_req_t [{}:0] slaves_req;\n".format(ns-1)
+        raw += "   mst_port_axi_rsp_t [{}:0] slaves_resp;\n".format(ns-1)
 
         ns = len(self.slaves)
 
@@ -409,22 +409,22 @@ class AxiIntercon:
 
         self.verilog_writer.raw = raw
         parameters = [
-            Parameter('Cfg'          , 'xbar_cfg' ),
-            Parameter('ATOPs'        , "1'b"+str(int(self.atop))),
-            Parameter('slv_aw_chan_t', 'aw_chan_mst_t'),
-            Parameter('mst_aw_chan_t', 'aw_chan_slv_t'),
-            Parameter('w_chan_t'     , 'w_chan_t'     ),
-            Parameter('slv_b_chan_t' , 'b_chan_mst_t' ),
-            Parameter('mst_b_chan_t' , 'b_chan_slv_t' ),
-            Parameter('slv_ar_chan_t', 'ar_chan_mst_t'),
-            Parameter('mst_ar_chan_t', 'ar_chan_slv_t'),
-            Parameter('slv_r_chan_t' , 'r_chan_mst_t' ),
-            Parameter('mst_r_chan_t' , 'r_chan_slv_t' ),
-            Parameter('slv_req_t'    , 'slv_req_t'    ),
-            Parameter('slv_resp_t'   , 'slv_resp_t'   ),
-            Parameter('mst_req_t'    , 'mst_req_t'    ),
-            Parameter('mst_resp_t'   , 'mst_resp_t'   ),
-            Parameter('rule_t'       , 'rule_t'       ),
+            Parameter('Cfg'               , 'xbar_cfg'               ),
+            Parameter('ATOPs'             , "1'b"+str(int(self.atop))),
+            Parameter('slv_aw_chan_t'     , 'aw_chan_mst_t'          ),
+            Parameter('mst_aw_chan_t'     , 'aw_chan_slv_t'          ),
+            Parameter('w_chan_t'          , 'w_chan_t'               ),
+            Parameter('slv_b_chan_t'      , 'b_chan_mst_t'           ),
+            Parameter('mst_b_chan_t'      , 'b_chan_slv_t'           ),
+            Parameter('slv_ar_chan_t'     , 'ar_chan_mst_t'          ),
+            Parameter('mst_ar_chan_t'     , 'ar_chan_slv_t'          ),
+            Parameter('slv_r_chan_t'      , 'r_chan_mst_t'           ),
+            Parameter('mst_r_chan_t'      , 'r_chan_slv_t'           ),
+            Parameter('slv_port_axi_req_t', 'slv_port_axi_req_t'     ),
+            Parameter('slv_port_axi_rsp_t', 'slv_port_axi_rsp_t'     ),
+            Parameter('mst_port_axi_req_t', 'mst_port_axi_req_t'     ),
+            Parameter('mst_port_axi_rsp_t', 'mst_port_axi_rsp_t'     ),
+            Parameter('rule_t'            , 'rule_t'                 ),
         ]
         ports = instance_ports(w, max_idw, self.masters, self.slaves)
 

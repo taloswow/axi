@@ -32,7 +32,7 @@ module axi_cdc_dst #(
   parameter type ar_chan_t = logic,
   parameter type r_chan_t = logic,
   parameter type axi_req_t = logic,
-  parameter type axi_resp_t = logic
+  parameter type axi_rsp_t = logic
 ) (
   // asynchronous slave port
   input  aw_chan_t  [2**LogDepth-1:0] async_data_slave_aw_data_i,
@@ -54,7 +54,7 @@ module axi_cdc_dst #(
   input  logic                        dst_clk_i,
   input  logic                        dst_rst_ni,
   output axi_req_t                    dst_req_o,
-  input  axi_resp_t                   dst_resp_i
+  input  axi_rsp_t                    dst_resp_i
 );
 
   cdc_fifo_gray_dst #(
@@ -156,11 +156,11 @@ module axi_cdc_dst_intf #(
   `AXI_TYPEDEF_B_CHAN_T(b_chan_t, id_t, user_t)
   `AXI_TYPEDEF_AR_CHAN_T(ar_chan_t, addr_t, id_t, user_t)
   `AXI_TYPEDEF_R_CHAN_T(r_chan_t, data_t, id_t, user_t)
-  `AXI_TYPEDEF_REQ_T(req_t, aw_chan_t, w_chan_t, ar_chan_t)
-  `AXI_TYPEDEF_RESP_T(resp_t, b_chan_t, r_chan_t)
+  `AXI_TYPEDEF_REQ_T(axi_req_t, aw_chan_t, w_chan_t, ar_chan_t)
+  `AXI_TYPEDEF_RSP_T(axi_rsp_t, b_chan_t, r_chan_t)
 
-  req_t  dst_req;
-  resp_t dst_resp;
+  axi_req_t dst_req;
+  axi_rsp_t dst_resp;
 
   axi_cdc_dst #(
     .aw_chan_t  ( aw_chan_t ),
@@ -168,8 +168,8 @@ module axi_cdc_dst_intf #(
     .b_chan_t   ( b_chan_t  ),
     .ar_chan_t  ( ar_chan_t ),
     .r_chan_t   ( r_chan_t  ),
-    .axi_req_t  ( req_t     ),
-    .axi_resp_t ( resp_t    ),
+    .axi_req_t  ( axi_req_t ),
+    .axi_rsp_t  ( axi_rsp_t ),
     .LogDepth   ( LOG_DEPTH )
   ) i_axi_cdc_dst (
     .async_data_slave_aw_data_i ( src.aw_data ),
@@ -221,21 +221,21 @@ module axi_lite_cdc_dst_intf #(
   `AXI_LITE_TYPEDEF_B_CHAN_T(b_chan_t)
   `AXI_LITE_TYPEDEF_AR_CHAN_T(ar_chan_t, addr_t)
   `AXI_LITE_TYPEDEF_R_CHAN_T(r_chan_t, data_t)
-  `AXI_LITE_TYPEDEF_REQ_T(req_t, aw_chan_t, w_chan_t, ar_chan_t)
-  `AXI_LITE_TYPEDEF_RESP_T(resp_t, b_chan_t, r_chan_t)
+  `AXI_LITE_TYPEDEF_REQ_T(axi_lite_req_t, aw_chan_t, w_chan_t, ar_chan_t)
+  `AXI_LITE_TYPEDEF_RSP_T(axi_lite_rsp_t, b_chan_t, r_chan_t)
 
-  req_t   dst_req;
-  resp_t  dst_resp;
+  axi_lite_req_t  dst_req;
+  axi_lite_rsp_t  dst_resp;
 
   axi_cdc_dst #(
-    .aw_chan_t  ( aw_chan_t ),
-    .w_chan_t   ( w_chan_t  ),
-    .b_chan_t   ( b_chan_t  ),
-    .ar_chan_t  ( ar_chan_t ),
-    .r_chan_t   ( r_chan_t  ),
-    .axi_req_t  ( req_t     ),
-    .axi_resp_t ( resp_t    ),
-    .LogDepth   ( LOG_DEPTH )
+    .aw_chan_t  ( aw_chan_t      ),
+    .w_chan_t   ( w_chan_t       ),
+    .b_chan_t   ( b_chan_t       ),
+    .ar_chan_t  ( ar_chan_t      ),
+    .r_chan_t   ( r_chan_t       ),
+    .axi_req_t  ( axi_lite_req_t ),
+    .axi_rsp_t  ( axi_lite_rsp_t ),
+    .LogDepth   ( LOG_DEPTH      )
   ) i_axi_cdc_dst (
     .async_data_slave_aw_data_i ( src.aw_data ),
     .async_data_slave_aw_wptr_i ( src.aw_wptr ),

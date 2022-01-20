@@ -51,7 +51,7 @@ module tb_axi_lite_to_apb #(
   `AXI_LITE_TYPEDEF_R_CHAN_T(r_chan_t, data_t)
 
   `AXI_LITE_TYPEDEF_REQ_T(axi_lite_req_t, aw_chan_t, w_chan_t, ar_chan_t)
-  `AXI_LITE_TYPEDEF_RESP_T(axi_lite_resp_t, b_chan_t, r_chan_t)
+  `AXI_LITE_TYPEDEF_RSP_T(axi_lite_rsp_t, b_chan_t, r_chan_t)
 
   typedef logic [NoApbSlaves-1:0] sel_t;
 
@@ -69,7 +69,7 @@ module tb_axi_lite_to_apb #(
     logic  pready;
     data_t prdata;
     logic  pslverr;
-  } apb_resp_t;
+  } apb_rsp_t;
 
   localparam rule_t [NoAddrRules-1:0] AddrMap = '{
     '{idx: 32'd7, start_addr: 32'h0001_0000, end_addr: 32'h0001_1000},
@@ -113,12 +113,12 @@ module tb_axi_lite_to_apb #(
   logic end_of_sim;
 
   // master structs
-  axi_lite_req_t  axi_req;
-  axi_lite_resp_t axi_resp;
+  axi_lite_req_t axi_req;
+  axi_lite_rsp_t axi_resp;
 
   // slave structs
-  apb_req_t  [NoApbSlaves-1:0] apb_req;
-  apb_resp_t [NoApbSlaves-1:0] apb_resps;
+  apb_req_t [NoApbSlaves-1:0] apb_req;
+  apb_rsp_t [NoApbSlaves-1:0] apb_resps;
 
   // -------------------------------
   // AXI Interfaces
@@ -235,9 +235,9 @@ module tb_axi_lite_to_apb #(
     .PipelineRequest  ( TbPipelineRequest   ),
     .PipelineResponse ( TbPipelineResponse  ),
     .axi_lite_req_t   ( axi_lite_req_t      ),
-    .axi_lite_resp_t  ( axi_lite_resp_t     ),
+    .axi_lite_rsp_t   ( axi_lite_rsp_t      ),
     .apb_req_t        ( apb_req_t           ),
-    .apb_resp_t       ( apb_resp_t          ),
+    .apb_rsp_t        ( apb_rsp_t           ),
     .rule_t           ( rule_t              )
   ) i_axi_lite_to_apb_dut (
     .clk_i           ( clk          ),

@@ -80,9 +80,9 @@ module tb_axi_xbar #(
   `AXI_TYPEDEF_R_CHAN_T(r_chan_slv_t, data_t, id_slv_t, user_t)
 
   `AXI_TYPEDEF_REQ_T(mst_req_t, aw_chan_mst_t, w_chan_t, ar_chan_mst_t)
-  `AXI_TYPEDEF_RESP_T(mst_resp_t, b_chan_mst_t, r_chan_mst_t)
+  `AXI_TYPEDEF_RSP_T(mst_rsp_t, b_chan_mst_t, r_chan_mst_t)
   `AXI_TYPEDEF_REQ_T(slv_req_t, aw_chan_slv_t, w_chan_t, ar_chan_slv_t)
-  `AXI_TYPEDEF_RESP_T(slv_resp_t, b_chan_slv_t, r_chan_slv_t)
+  `AXI_TYPEDEF_RSP_T(slv_rsp_t, b_chan_slv_t, r_chan_slv_t)
 
   localparam rule_t [xbar_cfg.NoAddrRules-1:0] AddrMap = '{
     '{idx: 32'd7 % TbNumSlv, start_addr: 32'h0001_0000, end_addr: 32'h0001_1000},
@@ -131,12 +131,12 @@ module tb_axi_xbar #(
   logic [TbNumMst-1:0] end_of_sim;
 
   // master structs
-  mst_req_t  [TbNumMst-1:0] masters_req;
-  mst_resp_t [TbNumMst-1:0] masters_resp;
+  mst_req_t [TbNumMst-1:0] masters_req;
+  mst_rsp_t [TbNumMst-1:0] masters_resp;
 
   // slave structs
-  slv_req_t  [TbNumSlv-1:0] slaves_req;
-  slv_resp_t [TbNumSlv-1:0] slaves_resp;
+  slv_req_t [TbNumSlv-1:0] slaves_req;
+  slv_rsp_t [TbNumSlv-1:0] slaves_resp;
 
   // -------------------------------
   // AXI Interfaces

@@ -57,32 +57,32 @@ module axi_id_remap #(
   /// Request struct type of the AXI4+ATOP slave port.
   ///
   /// The width of all IDs in this struct must match `AxiSlvPortIdWidth`.
-  parameter type slv_req_t = logic,
+  parameter type slv_port_axi_req_t = logic,
   /// Response struct type of the AXI4+ATOP slave port.
   ///
   /// The width of all IDs in this struct must match `AxiSlvPortIdWidth`.
-  parameter type slv_resp_t = logic,
+  parameter type slv_port_axi_rsp_t = logic,
   /// Request struct type of the AXI4+ATOP master port
   ///
   /// The width of all IDs in this struct must match `AxiMstPortIdWidth`.
-  parameter type mst_req_t = logic,
+  parameter type mst_port_axi_req_t = logic,
   /// Response struct type of the AXI4+ATOP master port
   ///
   /// The width of all IDs in this struct must match `AxiMstPortIdWidth`.
-  parameter type mst_resp_t = logic
+  parameter type mst_port_axi_rsp_t = logic
 ) (
   /// Rising-edge clock of all ports
-  input  logic      clk_i,
+  input  logic              clk_i,
   /// Asynchronous reset, active low
-  input  logic      rst_ni,
+  input  logic              rst_ni,
   /// Slave port request
-  input  slv_req_t  slv_req_i,
+  input  slv_port_axi_req_t slv_req_i,
   /// Slave port response
-  output slv_resp_t slv_resp_o,
+  output slv_port_axi_rsp_t slv_resp_o,
   /// Master port request
-  output mst_req_t  mst_req_o,
+  output mst_port_axi_req_t mst_req_o,
   /// Master port response
-  input  mst_resp_t mst_resp_i
+  input  mst_port_axi_rsp_t mst_resp_i
 );
 
   // Feed all signals that are not ID or flow control of AW and AR through.
@@ -602,21 +602,21 @@ module axi_id_remap_intf #(
   `AXI_TYPEDEF_B_CHAN_T(slv_b_chan_t, slv_id_t, axi_user_t)
   `AXI_TYPEDEF_AR_CHAN_T(slv_ar_chan_t, axi_addr_t, slv_id_t, axi_user_t)
   `AXI_TYPEDEF_R_CHAN_T(slv_r_chan_t, axi_data_t, slv_id_t, axi_user_t)
-  `AXI_TYPEDEF_REQ_T(slv_req_t, slv_aw_chan_t, slv_w_chan_t, slv_ar_chan_t)
-  `AXI_TYPEDEF_RESP_T(slv_resp_t, slv_b_chan_t, slv_r_chan_t)
+  `AXI_TYPEDEF_REQ_T(slv_port_axi_req_t, slv_aw_chan_t, slv_w_chan_t, slv_ar_chan_t)
+  `AXI_TYPEDEF_RSP_T(slv_port_axi_rsp_t, slv_b_chan_t, slv_r_chan_t)
 
   `AXI_TYPEDEF_AW_CHAN_T(mst_aw_chan_t, axi_addr_t, mst_id_t, axi_user_t)
   `AXI_TYPEDEF_W_CHAN_T(mst_w_chan_t, axi_data_t, axi_strb_t, axi_user_t)
   `AXI_TYPEDEF_B_CHAN_T(mst_b_chan_t, mst_id_t, axi_user_t)
   `AXI_TYPEDEF_AR_CHAN_T(mst_ar_chan_t, axi_addr_t, mst_id_t, axi_user_t)
   `AXI_TYPEDEF_R_CHAN_T(mst_r_chan_t, axi_data_t, mst_id_t, axi_user_t)
-  `AXI_TYPEDEF_REQ_T(mst_req_t, mst_aw_chan_t, mst_w_chan_t, mst_ar_chan_t)
-  `AXI_TYPEDEF_RESP_T(mst_resp_t, mst_b_chan_t, mst_r_chan_t)
+  `AXI_TYPEDEF_REQ_T(mst_port_axi_req_t, mst_aw_chan_t, mst_w_chan_t, mst_ar_chan_t)
+  `AXI_TYPEDEF_RSP_T(mst_port_axi_rsp_t, mst_b_chan_t, mst_r_chan_t)
 
-  slv_req_t  slv_req;
-  slv_resp_t slv_resp;
-  mst_req_t  mst_req;
-  mst_resp_t mst_resp;
+  slv_port_axi_req_t slv_req;
+  slv_port_axi_rsp_t slv_resp;
+  mst_port_axi_req_t mst_req;
+  mst_port_axi_rsp_t mst_resp;
 
   `AXI_ASSIGN_TO_REQ(slv_req, slv)
   `AXI_ASSIGN_FROM_RESP(slv, slv_resp)
@@ -628,10 +628,10 @@ module axi_id_remap_intf #(
     .AxiSlvPortMaxUniqIds ( AXI_SLV_PORT_MAX_UNIQ_IDS ),
     .AxiMaxTxnsPerId      ( AXI_MAX_TXNS_PER_ID       ),
     .AxiMstPortIdWidth    ( AXI_MST_PORT_ID_WIDTH     ),
-    .slv_req_t            ( slv_req_t                 ),
-    .slv_resp_t           ( slv_resp_t                ),
-    .mst_req_t            ( mst_req_t                 ),
-    .mst_resp_t           ( mst_resp_t                )
+    .slv_port_axi_req_t   ( slv_port_axi_req_t        ),
+    .slv_port_axi_rsp_t   ( slv_port_axi_rsp_t        ),
+    .mst_port_axi_req_t   ( mst_port_axi_req_t        ),
+    .mst_port_axi_rsp_t   ( mst_port_axi_rsp_t        )
   ) i_axi_id_remap (
     .clk_i,
     .rst_ni,

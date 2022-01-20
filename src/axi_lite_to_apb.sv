@@ -40,7 +40,7 @@
 //    logic  pready;   // slave signals that it is ready
 //    data_t prdata;   // read data, connects to R channel
 //    logic  pslverr;  // gets translated into either `axi_pkg::RESP_OK` or `axi_pkg::RESP_SLVERR`
-//  } apb_resp_t;
+//  } apb_rsp_t;
 // Each connected `apb_resp`, has to be connected to the corresponding port index. The module
 // routes the response depending on the `apb_req.psel` bit and `apb_req.pwrite` either to the
 // AXI4Lite B channel for writes and to the R channel for reads.
@@ -55,21 +55,21 @@ module axi_lite_to_apb #(
   parameter bit PipelineRequest      = 1'b0,   // Pipeline request path
   parameter bit PipelineResponse     = 1'b0,   // Pipeline response path
   parameter type      axi_lite_req_t = logic,  // AXI4-Lite request struct
-  parameter type     axi_lite_resp_t = logic,  // AXI4-Lite response sruct
+  parameter type      axi_lite_rsp_t = logic,  // AXI4-Lite response sruct
   parameter type           apb_req_t = logic,  // APB4 request struct
-  parameter type          apb_resp_t = logic,  // APB4 response struct
+  parameter type           apb_rsp_t = logic,  // APB4 response struct
   parameter type              rule_t = logic   // Address Decoder rule from `common_cells`
 ) (
-  input  logic                        clk_i,     // Clock
-  input  logic                        rst_ni,    // Asynchronous reset active low
+  input  logic                       clk_i,     // Clock
+  input  logic                       rst_ni,    // Asynchronous reset active low
   // AXI LITE slave port
-  input  axi_lite_req_t               axi_lite_req_i,
-  output axi_lite_resp_t              axi_lite_resp_o,
+  input  axi_lite_req_t              axi_lite_req_i,
+  output axi_lite_rsp_t              axi_lite_resp_o,
   // APB master port
-  output apb_req_t  [NoApbSlaves-1:0] apb_req_o,
-  input  apb_resp_t [NoApbSlaves-1:0] apb_resp_i,
+  output apb_req_t [NoApbSlaves-1:0] apb_req_o,
+  input  apb_rsp_t [NoApbSlaves-1:0] apb_resp_i,
   // APB Slave Address Map
-  input  rule_t     [NoRules-1:0]     addr_map_i
+  input  rule_t    [NoRules-1:0]     addr_map_i
 );
   localparam logic RD = 1'b0; // Encode index of a read request
   localparam logic WR = 1'b1; // Encode index of a write request
@@ -428,7 +428,7 @@ module axi_lite_to_apb_intf #(
     logic  pready;   // slave signals that it is ready
     data_t prdata;   // read data, connects to R channel
     logic  pslverr;  // gets translated into either `axi_pkg::RESP_OK` or `axi_pkg::RESP_SLVERR`
-  } apb_resp_t;
+  } apb_rsp_t;
 
   `AXI_LITE_TYPEDEF_AW_CHAN_T(aw_chan_t, addr_t)
   `AXI_LITE_TYPEDEF_W_CHAN_T(w_chan_t, data_t, strb_t)
@@ -436,12 +436,12 @@ module axi_lite_to_apb_intf #(
   `AXI_LITE_TYPEDEF_AR_CHAN_T(ar_chan_t, addr_t)
   `AXI_LITE_TYPEDEF_R_CHAN_T(r_chan_t, data_t)
   `AXI_LITE_TYPEDEF_REQ_T(axi_req_t, aw_chan_t, w_chan_t, ar_chan_t)
-  `AXI_LITE_TYPEDEF_RESP_T(axi_resp_t, b_chan_t, r_chan_t)
+  `AXI_LITE_TYPEDEF_RSP_T(axi_rsp_t, b_chan_t, r_chan_t)
 
   axi_req_t                     axi_req;
-  axi_resp_t                    axi_resp;
+  axi_rsp_t                     axi_resp;
   apb_req_t   [NoApbSlaves-1:0] apb_req;
-  apb_resp_t  [NoApbSlaves-1:0] apb_resp;
+  apb_rsp_t   [NoApbSlaves-1:0] apb_resp;
   logic       [SelIdxWidth-1:0] apb_sel;
 
   `AXI_LITE_ASSIGN_TO_REQ(axi_req, slv)
@@ -475,9 +475,9 @@ module axi_lite_to_apb_intf #(
     .PipelineRequest  ( PipelineRequest   ),
     .PipelineResponse ( PipelineResponse  ),
     .axi_lite_req_t   ( axi_req_t         ),
-    .axi_lite_resp_t  ( axi_resp_t        ),
+    .axi_lite_rsp_t   ( axi_rsp_t         ),
     .apb_req_t        ( apb_req_t         ),
-    .apb_resp_t       ( apb_resp_t        ),
+    .apb_rsp_t        ( apb_rsp_t         ),
     .rule_t           ( rule_t            )
   ) i_axi_lite_to_apb (
     .clk_i,     // Clock
