@@ -158,7 +158,7 @@ module axi_id_serialize #(
     .r_chan_t    ( slv_r_t            ),
     .axi_req_t   ( slv_port_axi_req_t ),
     .axi_rsp_t   ( slv_port_axi_rsp_t ),
-    .NoMstPorts  ( MstPortMaxUniqIds  ),
+    .NumMstPorts ( MstPortMaxUniqIds  ),
     .MaxTrans    ( SlvPortMaxTxns     ),
     .LookBits    ( SlvPortIdWidth     ),
     .FallThrough ( 1'b1               ),
@@ -229,7 +229,7 @@ module axi_id_serialize #(
     .slv_port_axi_rsp_t ( ser_rsp_t           ),
     .mst_port_axi_req_t ( mux_req_t           ),
     .mst_port_axi_rsp_t ( mux_rsp_t           ),
-    .NoSlvPorts         ( MstPortMaxUniqIds   ),
+    .NumSlvPorts        ( MstPortMaxUniqIds   ),
     .MaxWTrans          ( MstPortMaxTxnsPerId ),
     .FallThrough        ( 1'b0                ),
     .SpillAw            ( 1'b1                ),
@@ -259,7 +259,7 @@ module axi_id_serialize #(
     end
   end else begin : gen_no_id_shift
     axi_id_prepend #(
-      .NoBus          ( 32'd1           ),
+      .NumBus         ( 32'd1           ),
       .IdWidthSlvPort ( MuxIdWidth      ),
       .IdWidthMstPort ( MstPortIdWidth  ),
       .slv_aw_chan_t  ( mux_aw_t        ),

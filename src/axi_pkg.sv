@@ -393,8 +393,8 @@ package axi_pkg;
 
   /// Configuration for `axi_xbar`.
   typedef struct packed {
-    int unsigned   NoSlvPorts;
-    int unsigned   NoMstPorts;
+    int unsigned   NumSlvPorts;
+    int unsigned   NumMstPorts;
     int unsigned   MaxMstTrans;
     int unsigned   MaxSlvTrans;
     bit            FallThrough;
@@ -404,7 +404,7 @@ package axi_pkg;
     bit            UniqueIds;
     int unsigned   AddrWidth;
     int unsigned   DataWidth;
-    int unsigned   NoAddrRules;
+    int unsigned   NumAddrRules;
   } xbar_cfg_t;
 
   /// Commonly used rule types for `axi_xbar` (64-bit addresses).

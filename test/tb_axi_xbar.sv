@@ -30,8 +30,8 @@ module tb_axi_xbar #(
   parameter int unsigned TbNumSlv = 32'd8   // how many AXI slaves there are
 );
   // Random master no Transactions
-  localparam int unsigned NoWrites = 80;   // How many writes per master
-  localparam int unsigned NoReads  = 80;   // How many reads per master
+  localparam int unsigned NumWrites = 80;   // How many writes per master
+  localparam int unsigned NumReads  = 80;   // How many reads per master
   // timing parameters
   localparam time CyclTime = 10ns;
   localparam time ApplTime =  2ns;
@@ -47,8 +47,8 @@ module tb_axi_xbar #(
   localparam int unsigned UserWidth      =  5;
   // in the bench can change this variables which are set here freely
   localparam axi_pkg::xbar_cfg_t xbar_cfg = '{
-    NoSlvPorts:      TbNumMst,
-    NoMstPorts:      TbNumSlv,
+    NumSlvPorts:     TbNumMst,
+    NumMstPorts:     TbNumSlv,
     MaxMstTrans:     10,
     MaxSlvTrans:     6,
     FallThrough:     1'b0,
@@ -58,7 +58,7 @@ module tb_axi_xbar #(
     UniqueIds:       TbUniqueIds,
     AddrWidth:       AddrWidth,
     DataWidth:       DataWidth,
-    NoAddrRules:     8
+    NumAddrRules:    8
   };
   typedef logic [IdWidthMasters-1:0] id_mst_t;
   typedef logic [IdWidthSlaves-1:0]  id_slv_t;
@@ -84,7 +84,7 @@ module tb_axi_xbar #(
   `AXI_TYPEDEF_REQ_T(slv_req_t, aw_chan_slv_t, w_chan_t, ar_chan_slv_t)
   `AXI_TYPEDEF_RSP_T(slv_rsp_t, b_chan_slv_t, r_chan_slv_t)
 
-  localparam rule_t [xbar_cfg.NoAddrRules-1:0] AddrMap = '{
+  localparam rule_t [xbar_cfg.NumAddrRules-1:0] AddrMap = '{
     '{idx: 32'd7 % TbNumSlv, start_addr: 32'h0001_0000, end_addr: 32'h0001_1000},
     '{idx: 32'd6 % TbNumSlv, start_addr: 32'h0000_9000, end_addr: 32'h0001_0000},
     '{idx: 32'd5 % TbNumSlv, start_addr: 32'h0000_8000, end_addr: 32'h0000_9000},
@@ -197,11 +197,11 @@ module tb_axi_xbar #(
     initial begin
       end_of_sim[i] <= 1'b0;
       axi_rand_master.add_memory_region(AddrMap[0].start_addr,
-                                      AddrMap[xbar_cfg.NoAddrRules-1].end_addr,
+                                      AddrMap[xbar_cfg.NumAddrRules-1].end_addr,
                                       axi_pkg::DEVICE_NONBUFFERABLE);
       axi_rand_master.reset();
       @(posedge rst_n);
-      axi_rand_master.run(NoReads, NoWrites);
+      axi_rand_master.run(NumReads, NumWrites);
       end_of_sim[i] <= 1'b1;
     end
   end
@@ -217,17 +217,17 @@ module tb_axi_xbar #(
 
   initial begin : proc_monitor
     static tb_axi_xbar_pkg::axi_xbar_monitor #(
-      .AddrWidth      ( AddrWidth            ),
-      .DataWidth      ( DataWidth            ),
-      .IdWidthMasters ( IdWidthMasters       ),
-      .IdWidthSlaves  ( IdWidthSlaves        ),
-      .UserWidth      ( UserWidth            ),
-      .NoMasters      ( TbNumMst             ),
-      .NoSlaves       ( TbNumSlv             ),
-      .NoAddrRules    ( xbar_cfg.NoAddrRules ),
-      .rule_t         ( rule_t               ),
-      .AddrMap        ( AddrMap              ),
-      .TimeTest       ( TestTime             )
+      .AddrWidth      ( AddrWidth             ),
+      .DataWidth      ( DataWidth             ),
+      .IdWidthMasters ( IdWidthMasters        ),
+      .IdWidthSlaves  ( IdWidthSlaves         ),
+      .UserWidth      ( UserWidth             ),
+      .NumMasters     ( TbNumMst              ),
+      .NumSlaves      ( TbNumSlv              ),
+      .NumAddrRules   ( xbar_cfg.NumAddrRules ),
+      .rule_t         ( rule_t                ),
+      .AddrMap        ( AddrMap               ),
+      .TimeTest       ( TestTime              )
     ) monitor = new( master_monitor_dv, slave_monitor_dv );
     fork
       monitor.run();
