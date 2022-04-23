@@ -171,6 +171,7 @@ module axi_to_axi_lite_id_reflect #(
   ) i_aw_id_fifo (
     .clk_i     ( clk_i           ),
     .rst_ni    ( rst_ni          ),
+    .clr_i     ( 1'b0           ),
     .flush_i   ( 1'b0            ),
     .testmode_i( test_i          ),
     .full_o    ( aw_full         ),
@@ -192,6 +193,7 @@ module axi_to_axi_lite_id_reflect #(
   ) i_ar_id_fifo (
     .clk_i     ( clk_i           ),
     .rst_ni    ( rst_ni          ),
+    .clr_i     ( 1'b0            ),
     .flush_i   ( 1'b0            ),
     .testmode_i( test_i          ),
     .full_o    ( ar_full         ),

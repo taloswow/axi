@@ -164,6 +164,7 @@ module axi_demux #(
     ) i_aw_spill_reg (
       .clk_i   ( clk_i                        ),
       .rst_ni  ( rst_ni                       ),
+      .clr_i   ( 1'b0                         ),
       .valid_i ( slv_req_i.aw_valid           ),
       .ready_o ( slv_resp_o.aw_ready          ),
       .data_i  ( slv_aw_chan_select_in_flat   ),
@@ -268,6 +269,7 @@ module axi_demux #(
     ) i_w_fifo (
       .clk_i     ( clk_i                        ),
       .rst_ni    ( rst_ni                       ),
+      .clr_i     ( 1'b0                         ),
       .flush_i   ( 1'b0                         ),
       .testmode_i( test_i                       ),
       .full_o    ( w_fifo_full                  ),
@@ -288,6 +290,7 @@ module axi_demux #(
     ) i_w_spill_reg(
       .clk_i   ( clk_i              ),
       .rst_ni  ( rst_ni             ),
+      .clr_i   ( 1'b0               ),
       .valid_i ( slv_req_i.w_valid  ),
       .ready_o ( slv_resp_o.w_ready ),
       .data_i  ( slv_req_i.w        ),
@@ -306,6 +309,7 @@ module axi_demux #(
     ) i_b_spill_reg (
       .clk_i   ( clk_i              ),
       .rst_ni  ( rst_ni             ),
+      .clr_i   ( 1'b0               ),
       .valid_i ( slv_b_valid        ),
       .ready_o ( slv_b_ready        ),
       .data_i  ( slv_b_chan         ),
@@ -323,6 +327,7 @@ module axi_demux #(
     ) i_b_mux (
       .clk_i  ( clk_i         ),
       .rst_ni ( rst_ni        ),
+      .clr_i  ( 1'b0          ),
       .flush_i( 1'b0          ),
       .rr_i   ( '0            ),
       .req_i  ( mst_b_valids  ),
@@ -353,6 +358,7 @@ module axi_demux #(
     ) i_ar_spill_reg (
       .clk_i   ( clk_i                        ),
       .rst_ni  ( rst_ni                       ),
+      .clr_i   ( 1'b0                         ),
       .valid_i ( slv_req_i.ar_valid           ),
       .ready_o ( slv_resp_o.ar_ready          ),
       .data_i  ( slv_ar_chan_select_in_flat   ),
@@ -452,6 +458,7 @@ module axi_demux #(
     ) i_r_spill_reg (
       .clk_i   ( clk_i              ),
       .rst_ni  ( rst_ni             ),
+      .clr_i   ( 1'b0               ),
       .valid_i ( slv_r_valid        ),
       .ready_o ( slv_r_ready        ),
       .data_i  ( slv_r_chan         ),
@@ -469,6 +476,7 @@ module axi_demux #(
     ) i_r_mux (
       .clk_i  ( clk_i         ),
       .rst_ni ( rst_ni        ),
+      .clr_i  ( 1'b0          ),
       .flush_i( 1'b0          ),
       .rr_i   ( '0            ),
       .req_i  ( mst_r_valids  ),
@@ -665,6 +673,7 @@ module axi_demux_id_counters #(
     ) i_in_flight_cnt (
       .clk_i      ( clk_i     ),
       .rst_ni     ( rst_ni    ),
+      .clr_i      ( 1'b0      ),
       .clear_i    ( 1'b0      ),
       .en_i       ( cnt_en    ),
       .load_i     ( 1'b0      ),
