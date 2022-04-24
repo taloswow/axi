@@ -236,7 +236,6 @@ module axi_err_slv #(
   ) i_r_counter (
     .clk_i     ( clk_i           ),
     .rst_ni    ( rst_ni          ),
-    .clr_i     ( 1'b0            ),
     .clear_i   ( r_cnt_clear     ),
     .en_i      ( r_cnt_en        ),
     .load_i    ( r_cnt_load      ),
