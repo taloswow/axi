@@ -31,6 +31,7 @@ module axi_to_axi_lite #(
 ) (
   input  logic       clk_i,    // Clock
   input  logic       rst_ni,   // Asynchronous reset active low
+  input  logic       clr_i,    // Synchronous clear active high
   input  logic       test_i,   // Testmode enable
   // slave port full AXI4+ATOP
   input  full_req_t  slv_req_i,
@@ -71,6 +72,7 @@ module axi_to_axi_lite #(
   ) i_axi_burst_splitter (
     .clk_i      ( clk_i         ),
     .rst_ni     ( rst_ni        ),
+    .clr_i      ( clr_i         ),
     .slv_req_i  ( filtered_req  ),
     .slv_resp_o ( filtered_resp ),
     .mst_req_o  ( splitted_req  ),
@@ -260,6 +262,7 @@ module axi_to_axi_lite_intf #(
 ) (
   input logic     clk_i,
   input logic     rst_ni,
+  input logic     clr_i,
   input logic     testmode_i,
   AXI_BUS.Slave   slv,
   AXI_LITE.Master mst
@@ -312,6 +315,7 @@ module axi_to_axi_lite_intf #(
   ) i_axi_to_axi_lite (
     .clk_i      ( clk_i      ),
     .rst_ni     ( rst_ni     ),
+    .clr_i      ( clr_i      ),
     .test_i     ( testmode_i ),
     // slave port full AXI4+ATOP
     .slv_req_i  ( full_req   ),
