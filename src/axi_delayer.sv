@@ -32,7 +32,6 @@ module axi_delayer #(
 ) (
   input  logic  clk_i,      // Clock
   input  logic  rst_ni,     // Asynchronous reset active low
-  input  logic  clr_i,      // Synchronous clear active high
   // slave port
   input  req_t  slv_req_i,
   output resp_t slv_resp_o,
@@ -48,7 +47,7 @@ module axi_delayer #(
   ) i_stream_delay_aw (
     .clk_i,
     .rst_ni,
-    .clr_i,
+    .clr_i     ( 1'b0                ),
     .payload_i ( slv_req_i.aw        ),
     .ready_o   ( slv_resp_o.aw_ready ),
     .valid_i   ( slv_req_i.aw_valid  ),
@@ -65,7 +64,7 @@ module axi_delayer #(
   ) i_stream_delay_ar (
     .clk_i,
     .rst_ni,
-    .clr_i,
+    .clr_i     ( 1'b0                ),
     .payload_i ( slv_req_i.ar        ),
     .ready_o   ( slv_resp_o.ar_ready ),
     .valid_i   ( slv_req_i.ar_valid  ),
@@ -82,7 +81,7 @@ module axi_delayer #(
   ) i_stream_delay_w (
     .clk_i,
     .rst_ni,
-    .clr_i,
+    .clr_i     ( 1'b0               ),
     .payload_i ( slv_req_i.w        ),
     .ready_o   ( slv_resp_o.w_ready ),
     .valid_i   ( slv_req_i.w_valid  ),
@@ -99,7 +98,7 @@ module axi_delayer #(
   ) i_stream_delay_b (
     .clk_i,
     .rst_ni,
-    .clr_i,
+    .clr_i     ( 1'b0               ),
     .payload_i ( mst_resp_i.b       ),
     .ready_o   ( mst_req_o.b_ready  ),
     .valid_i   ( mst_resp_i.b_valid ),
@@ -116,7 +115,7 @@ module axi_delayer #(
   ) i_stream_delay_r (
     .clk_i,
     .rst_ni,
-    .clr_i,
+    .clr_i     ( 1'b0               ),
     .payload_i ( mst_resp_i.r       ),
     .ready_o   ( mst_req_o.r_ready  ),
     .valid_i   ( mst_resp_i.r_valid ),
@@ -143,7 +142,6 @@ module axi_delayer_intf #(
 ) (
   input  logic    clk_i,
   input  logic    rst_ni,
-  input  logic    clr_i,
   AXI_BUS.Slave   slv,
   AXI_BUS.Master  mst
 );
@@ -186,7 +184,6 @@ module axi_delayer_intf #(
   ) i_axi_delayer (
     .clk_i,   // Clock
     .rst_ni,  // Asynchronous reset active low
-    .clr_i,   // Synchronous clear active high
     .slv_req_i  ( slv_req  ),
     .slv_resp_o ( slv_resp ),
     .mst_req_o  ( mst_req  ),

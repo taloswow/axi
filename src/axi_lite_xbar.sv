@@ -34,6 +34,7 @@ module axi_lite_xbar #(
 ) (
   input  logic                                        clk_i,
   input  logic                                        rst_ni,
+  input  logic                                        clr_i,
   input  logic                                        test_i,
   input  req_t  [Cfg.NoSlvPorts-1:0]                  slv_ports_req_i,
   output resp_t [Cfg.NoSlvPorts-1:0]                  slv_ports_resp_o,
@@ -193,6 +194,7 @@ module axi_lite_xbar #(
     ) i_axi_err_slv (
       .clk_i      ( clk_i       ),  // Clock
       .rst_ni     ( rst_ni      ),  // Asynchronous reset active low
+      .clr_i      ( clr_i       ),  // Synchronous clear active high
       .test_i     ( test_i      ),  // Testmode enable
       // slave port
       .slv_req_i  ( decerr_req  ),

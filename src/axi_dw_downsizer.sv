@@ -39,7 +39,6 @@ module axi_dw_downsizer #(
   ) (
     input  logic          clk_i,
     input  logic          rst_ni,
-    input  logic          clr_i,
     // Slave interface
     input  axi_slv_req_t  slv_req_i,
     output axi_slv_resp_t slv_resp_o,
@@ -317,7 +316,7 @@ module axi_dw_downsizer #(
   ) i_read_id_queue (
     .clk_i           (clk_i           ),
     .rst_ni          (rst_ni          ),
-    .clr_i           (clr_i           ),
+    .clr_i           (1'b0            ),
     .inp_id_i        (arb_slv_ar_id   ),
     .inp_data_i      (idx_ar_downsizer),
     .inp_req_i       (|idqueue_push   ),

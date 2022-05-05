@@ -40,7 +40,6 @@ module axi_burst_splitter #(
 ) (
   input  logic  clk_i,
   input  logic  rst_ni,
-  input  logic  clr_i,
 
   // Input / Slave Port
   input  req_t  slv_req_i,
@@ -145,7 +144,6 @@ module axi_burst_splitter #(
   ) i_axi_burst_splitter_aw_chan (
     .clk_i,
     .rst_ni,
-    .clr_i,
     .ax_i           ( act_req.aw           ),
     .ax_valid_i     ( act_req.aw_valid     ),
     .ax_ready_o     ( act_resp.aw_ready    ),
@@ -240,7 +238,6 @@ module axi_burst_splitter #(
   ) i_axi_burst_splitter_ar_chan (
     .clk_i,
     .rst_ni,
-    .clr_i,
     .ax_i           ( act_req.ar          ),
     .ax_valid_i     ( act_req.ar_valid    ),
     .ax_ready_o     ( act_resp.ar_ready   ),
@@ -354,7 +351,6 @@ module axi_burst_splitter_ax_chan #(
 ) (
   input  logic          clk_i,
   input  logic          rst_ni,
-  input  logic          clr_i,
 
   input  chan_t         ax_i,
   input  logic          ax_valid_i,
@@ -380,7 +376,6 @@ module axi_burst_splitter_ax_chan #(
   ) i_axi_burst_splitter_counters (
     .clk_i,
     .rst_ni,
-    .clr_i,
     .alloc_id_i     ( ax_i.id       ),
     .alloc_len_i    ( ax_i.len      ),
     .alloc_req_i    ( cnt_alloc_req ),
@@ -470,7 +465,6 @@ module axi_burst_splitter_counters #(
 ) (
   input  logic          clk_i,
   input  logic          rst_ni,
-  input  logic          clr_i,
 
   input  id_t           alloc_id_i,
   input  axi_pkg::len_t alloc_len_i,
@@ -498,6 +492,7 @@ module axi_burst_splitter_counters #(
     ) i_cnt (
       .clk_i,
       .rst_ni,
+      .reg_clear  ( 1'b0       ),
       .clear_i    ( 1'b0       ),
       .en_i       ( cnt_dec[i] ),
       .load_i     ( cnt_set[i] ),
@@ -528,7 +523,7 @@ module axi_burst_splitter_counters #(
   ) i_idq (
     .clk_i,
     .rst_ni,
-    .clr_i            ( clr_i         ),
+    .clr_i            ( 1'b0          ),
     .inp_id_i         ( alloc_id_i    ),
     .inp_data_i       ( cnt_free_idx  ),
     .inp_req_i        ( idq_inp_req   ),
