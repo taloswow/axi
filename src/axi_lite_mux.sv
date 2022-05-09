@@ -207,6 +207,7 @@ module axi_lite_mux #(
     ) i_aw_spill_reg (
       .clk_i   ( clk_i               ),
       .rst_ni  ( rst_ni              ),
+      .clr_i   ( 1'b0                ),
       .valid_i ( mst_aw_valid        ),
       .ready_o ( mst_aw_ready        ),
       .data_i  ( mst_aw_chan         ),
@@ -251,6 +252,7 @@ module axi_lite_mux #(
     ) i_w_spill_reg (
       .clk_i   ( clk_i              ),
       .rst_ni  ( rst_ni             ),
+      .clr_i   ( 1'b0               ),
       .valid_i ( mst_w_valid        ),
       .ready_o ( mst_w_ready        ),
       .data_i  ( mst_w_chan         ),
@@ -276,6 +278,7 @@ module axi_lite_mux #(
     ) i_b_spill_reg (
       .clk_i   ( clk_i              ),
       .rst_ni  ( rst_ni             ),
+      .clr_i   ( 1'b0               ),
       .valid_i ( mst_resp_i.b_valid ),
       .ready_o ( mst_req_o.b_ready  ),
       .data_i  ( mst_resp_i.b       ),
@@ -342,6 +345,7 @@ module axi_lite_mux #(
     ) i_ar_spill_reg (
       .clk_i   ( clk_i               ),
       .rst_ni  ( rst_ni              ),
+      .clr_i   ( 1'b0                ),
       .valid_i ( mst_ar_valid        ),
       .ready_o ( mst_ar_ready        ),
       .data_i  ( mst_ar_chan         ),
@@ -367,6 +371,7 @@ module axi_lite_mux #(
     ) i_r_spill_reg (
       .clk_i   ( clk_i              ),
       .rst_ni  ( rst_ni             ),
+      .clr_i   ( 1'b0               ),
       .valid_i ( mst_resp_i.r_valid ),
       .ready_o ( mst_req_o.r_ready  ),
       .data_i  ( mst_resp_i.r       ),

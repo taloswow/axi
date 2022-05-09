@@ -173,6 +173,7 @@ module axi_lite_to_apb #(
     ) i_req_spill (
       .clk_i,
       .rst_ni,
+      .clr_i   ( 1'b0          ),
       .valid_i ( arb_req_valid ),
       .ready_o ( arb_req_ready ),
       .data_i  ( arb_req       ),
@@ -204,6 +205,7 @@ module axi_lite_to_apb #(
     ) i_write_resp_spill (
       .clk_i,
       .rst_ni,
+      .clr_i   ( 1'b0                   ),
       .valid_i ( apb_wresp_valid        ),
       .ready_o ( apb_wresp_ready        ),
       .data_i  ( apb_wresp              ),
@@ -217,6 +219,7 @@ module axi_lite_to_apb #(
     ) i_read_resp_spill (
       .clk_i,
       .rst_ni,
+      .clr_i   ( 1'b0                   ),
       .valid_i ( apb_rresp_valid        ),
       .ready_o ( apb_rresp_ready        ),
       .data_i  ( apb_rresp              ),
