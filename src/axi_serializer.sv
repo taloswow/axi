@@ -153,6 +153,7 @@ module axi_serializer #(
   ) i_rd_id_fifo (
     .clk_i,
     .rst_ni,
+    .clr_i      ( 1'b0          ),
     .flush_i    ( 1'b0          ),
     .testmode_i ( 1'b0          ),
     .data_i     ( ar_id         ),
@@ -173,6 +174,7 @@ module axi_serializer #(
   ) i_wr_id_fifo (
     .clk_i,
     .rst_ni,
+    .clr_i      ( 1'b0            ),
     .flush_i    ( 1'b0            ),
     .testmode_i ( 1'b0            ),
     .data_i     ( slv_req_i.aw.id ),

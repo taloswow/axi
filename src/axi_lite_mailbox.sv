@@ -129,6 +129,7 @@ module axi_lite_mailbox #(
   ) i_mbox_0_to_1 (
     .clk_i,
     .rst_ni,
+    .clr_i     ( 1'b0                              ),
     .testmode_i( test_i                            ),
     .flush_i   ( w_mbox_flush[0] | r_mbox_flush[1] ),
     .full_o    ( mbox_full[0]                      ),
@@ -149,6 +150,7 @@ module axi_lite_mailbox #(
   ) i_mbox_1_to_0 (
     .clk_i,
     .rst_ni,
+    .clr_i     ( 1'b0                              ),
     .testmode_i( test_i                            ),
     .flush_i   ( w_mbox_flush[1] | r_mbox_flush[0] ),
     .full_o    ( mbox_full[1]                      ),

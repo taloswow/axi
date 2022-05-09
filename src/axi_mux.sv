@@ -246,6 +246,7 @@ module axi_mux #(
     ) i_w_fifo (
       .clk_i     ( clk_i                                     ),
       .rst_ni    ( rst_ni                                    ),
+      .clr_i     ( 1'b0                                      ),
       .flush_i   ( 1'b0                                      ),
       .testmode_i( test_i                                    ),
       .full_o    ( w_fifo_full                               ),

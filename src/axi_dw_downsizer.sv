@@ -654,6 +654,7 @@ module axi_dw_downsizer #(
   ) i_forward_b_beats_queue (
     .clk_i     (clk_i               ),
     .rst_ni    (rst_ni              ),
+    .clr_i     (1'b0                ),
     .flush_i   (1'b0                ),
     .testmode_i(1'b0                ),
     .data_i    (forward_b_beat_i    ),
