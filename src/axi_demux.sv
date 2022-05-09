@@ -665,6 +665,7 @@ module axi_demux_id_counters #(
     ) i_in_flight_cnt (
       .clk_i      ( clk_i     ),
       .rst_ni     ( rst_ni    ),
+      .reg_clear  ( 1'b0      ),
       .clear_i    ( 1'b0      ),
       .en_i       ( cnt_en    ),
       .load_i     ( 1'b0      ),
