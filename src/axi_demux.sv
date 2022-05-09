@@ -326,6 +326,7 @@ module axi_demux #(
     ) i_b_mux (
       .clk_i  ( clk_i         ),
       .rst_ni ( rst_ni        ),
+      .clr_i  ( 1'b0          ),
       .flush_i( 1'b0          ),
       .rr_i   ( '0            ),
       .req_i  ( mst_b_valids  ),
@@ -474,6 +475,7 @@ module axi_demux #(
     ) i_r_mux (
       .clk_i  ( clk_i         ),
       .rst_ni ( rst_ni        ),
+      .clr_i  ( 1'b0          ),
       .flush_i( 1'b0          ),
       .rr_i   ( '0            ),
       .req_i  ( mst_r_valids  ),

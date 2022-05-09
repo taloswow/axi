@@ -155,6 +155,7 @@ module axi_lite_to_apb #(
   ) i_req_arb (
     .clk_i,
     .rst_ni,
+    .clr_i   ( 1'b0          ),
     .flush_i ( '0            ),
     .rr_i    ( '0            ),
     .req_i   ( axi_req_valid ),

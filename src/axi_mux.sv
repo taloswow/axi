@@ -193,6 +193,7 @@ module axi_mux #(
     ) i_aw_arbiter (
       .clk_i  ( clk_i           ),
       .rst_ni ( rst_ni          ),
+      .clr_i  ( 1'b0            ),
       .flush_i( 1'b0            ),
       .rr_i   ( '0              ),
       .req_i  ( slv_aw_valids   ),
@@ -341,6 +342,7 @@ module axi_mux #(
     ) i_ar_arbiter (
       .clk_i  ( clk_i           ),
       .rst_ni ( rst_ni          ),
+      .clr_i  ( 1'b0            ),
       .flush_i( 1'b0            ),
       .rr_i   ( '0              ),
       .req_i  ( slv_ar_valids   ),

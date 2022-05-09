@@ -102,6 +102,7 @@ module axi_dw_upsizer #(
   ) i_slv_r_arb (
     .clk_i  (clk_i             ),
     .rst_ni (rst_ni            ),
+    .clr_i  (1'b0              ),
     .flush_i(1'b0              ),
     .rr_i   ('0                ),
     .req_i  (slv_r_valid_tran  ),
@@ -138,6 +139,7 @@ module axi_dw_upsizer #(
   ) i_slv_ar_arb (
     .clk_i  (clk_i                                       ),
     .rst_ni (rst_ni                                      ),
+    .clr_i  (1'b0                                        ),
     .flush_i(1'b0                                        ),
     .rr_i   ('0                                          ),
     .req_i  ({inject_aw_into_ar_req, slv_req_i.ar_valid} ),
@@ -164,6 +166,7 @@ module axi_dw_upsizer #(
   ) i_mst_ar_arb (
     .clk_i  (clk_i            ),
     .rst_ni (rst_ni           ),
+    .clr_i  (1'b0             ),
     .flush_i(1'b0             ),
     .rr_i   ('0               ),
     .req_i  (mst_ar_valid_tran),
