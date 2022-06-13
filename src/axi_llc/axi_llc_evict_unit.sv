@@ -135,6 +135,7 @@ module axi_llc_evict_unit #(
   ) i_stream_fifo_evict (
     .clk_i,
     .rst_ni,
+    .clr_i      ( '0            ),
     .flush_i    ( 1'b0          ),
     .testmode_i ( test_i        ),
     .usage_o    ( /*not used*/  ),
@@ -193,6 +194,7 @@ module axi_llc_evict_unit #(
   ) i_stream_fifo_miss_buffer (
     .clk_i,
     .rst_ni,
+    .clr_i      ( '0           ),
     .flush_i    ( 1'b0         ),
     .testmode_i ( test_i       ),
     .usage_o    ( /*not used*/ ),

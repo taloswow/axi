@@ -547,6 +547,7 @@ module axi_llc_top #(
   ) i_rw_arb_tree (
     .clk_i  ( clk_i         ),
     .rst_ni ( rst_ni        ),
+    .clr_i  ( '0            ),
     .flush_i( '0            ),
     .rr_i   ( '0            ),
     .req_i  ( ax_desc_valid ),
@@ -563,6 +564,7 @@ module axi_llc_top #(
   ) i_rw_spill (
     .clk_i   ( clk_i         ),
     .rst_ni  ( rst_ni        ),
+    .clr_i   ( '0            ),
     .valid_i ( rw_desc_valid ),
     .ready_o ( rw_desc_ready ),
     .data_i  ( rw_desc       ),

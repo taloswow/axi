@@ -45,6 +45,7 @@ module axi_cut #(
   ) i_reg_aw (
     .clk_i   ( clk_i               ),
     .rst_ni  ( rst_ni              ),
+    .clr_i   ( '0                  ),
     .valid_i ( slv_req_i.aw_valid  ),
     .ready_o ( slv_resp_o.aw_ready ),
     .data_i  ( slv_req_i.aw        ),
@@ -59,6 +60,7 @@ module axi_cut #(
   ) i_reg_w  (
     .clk_i   ( clk_i              ),
     .rst_ni  ( rst_ni             ),
+    .clr_i   ( '0                 ),
     .valid_i ( slv_req_i.w_valid  ),
     .ready_o ( slv_resp_o.w_ready ),
     .data_i  ( slv_req_i.w        ),
@@ -73,6 +75,7 @@ module axi_cut #(
   ) i_reg_b  (
     .clk_i   ( clk_i              ),
     .rst_ni  ( rst_ni             ),
+    .clr_i   ( '0                 ),
     .valid_i ( mst_resp_i.b_valid ),
     .ready_o ( mst_req_o.b_ready  ),
     .data_i  ( mst_resp_i.b       ),
@@ -87,6 +90,7 @@ module axi_cut #(
   ) i_reg_ar (
     .clk_i   ( clk_i               ),
     .rst_ni  ( rst_ni              ),
+    .clr_i   ( '0                  ),
     .valid_i ( slv_req_i.ar_valid  ),
     .ready_o ( slv_resp_o.ar_ready ),
     .data_i  ( slv_req_i.ar        ),
@@ -101,6 +105,7 @@ module axi_cut #(
   ) i_reg_r  (
     .clk_i   ( clk_i              ),
     .rst_ni  ( rst_ni             ),
+    .clr_i   ( '0                 ),
     .valid_i ( mst_resp_i.r_valid ),
     .ready_o ( mst_req_o.r_ready  ),
     .data_i  ( mst_resp_i.r       ),

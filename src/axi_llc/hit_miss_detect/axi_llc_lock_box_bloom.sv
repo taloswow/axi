@@ -86,6 +86,7 @@ module axi_llc_lock_box_bloom #(
   ) i_w_unlock_fifo (
     .clk_i,
     .rst_ni,
+    .clr_i      ( '0           ),
     .flush_i    ( 1'b0         ),
     .testmode_i ( test_i       ),
     .full_o     ( w_full       ),
@@ -107,6 +108,7 @@ module axi_llc_lock_box_bloom #(
   ) i_r_unlock_fifo (
     .clk_i,
     .rst_ni,
+    .clr_i      ( '0           ),
     .flush_i    ( 1'b0         ),
     .testmode_i ( test_i       ),
     .full_o     ( r_full       ),
@@ -127,6 +129,7 @@ module axi_llc_lock_box_bloom #(
   ) i_unlock_tree (
     .clk_i,
     .rst_ni,
+    .clr_i   ( '0           ),
     .flush_i ( 1'b0         ),
     .rr_i    ( '0           ),
     .req_i   ({~w_empty, ~r_empty}),
@@ -152,6 +155,7 @@ module axi_llc_lock_box_bloom #(
   ) i_cb_filter(
     .clk_i,   // Clock
     .rst_ni,  // Active low reset
+    .clr_i          ( '0         ),
     // data lookup
     .look_data_i    ( look_data  ),
     .look_valid_o   ( look_valid ),

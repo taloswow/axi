@@ -184,6 +184,7 @@ module axi_llc_r_master #(
   ) i_block_offset_counter (
     .clk_i        ( clk_i        ),
     .rst_ni       ( rst_ni       ),
+    .reg_clear    ( '0           ),
     .clear_i      ( 1'b0         ), // counter do not get cleared
     .en_i         ( en_cnt       ),
     .load_i       ( load_cnt     ),

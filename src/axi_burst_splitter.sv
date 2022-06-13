@@ -492,6 +492,7 @@ module axi_burst_splitter_counters #(
     ) i_cnt (
       .clk_i,
       .rst_ni,
+      .reg_clear  ( '0         ),
       .clear_i    ( 1'b0       ),
       .en_i       ( cnt_dec[i] ),
       .load_i     ( cnt_set[i] ),
@@ -522,6 +523,7 @@ module axi_burst_splitter_counters #(
   ) i_idq (
     .clk_i,
     .rst_ni,
+    .clr_i            ( '0            ),
     .inp_id_i         ( alloc_id_i    ),
     .inp_data_i       ( cnt_free_idx  ),
     .inp_req_i        ( idq_inp_req   ),

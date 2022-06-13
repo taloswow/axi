@@ -224,6 +224,7 @@ module axi_llc_tag_pattern_gen #(
   ) i_index_cnt (
     .clk_i     (        clk_i ),
     .rst_ni    (       rst_ni ),
+    .reg_clear (           '0 ),
     .clear_i   (    clear_cnt ),
     .en_i      (       en_cnt ),
     .load_i    (     load_cnt ),

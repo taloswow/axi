@@ -358,6 +358,7 @@ module axi_lite_regs #(
   ) i_b_spill_register (
     .clk_i,
     .rst_ni,
+    .clr_i   ( '0                 ),
     .valid_i ( b_valid            ),
     .ready_o ( b_ready            ),
     .data_i  ( b_chan             ),
@@ -373,6 +374,7 @@ module axi_lite_regs #(
   ) i_r_spill_register (
     .clk_i,
     .rst_ni,
+    .clr_i   ( '0                 ),
     .valid_i ( r_valid            ),
     .ready_o ( r_ready            ),
     .data_i  ( r_chan             ),

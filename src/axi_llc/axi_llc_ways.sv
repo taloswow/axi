@@ -124,6 +124,7 @@ module axi_llc_ways #(
   ) i_stream_xbar (
     .clk_i,
     .rst_ni,
+    .clr_i   ( '0              ),
     .flush_i ( '0              ),
     .rr_i    ( '0              ),
     .data_i  ( way_inp_i       ),
@@ -172,6 +173,7 @@ module axi_llc_ways #(
   ) i_r_switch_fifo (
     .clk_i,                                                     // Clock
     .rst_ni,                                                    // Asynchronous reset active low
+    .clr_i      ( '0                                        ),  // Synchronous clear active high
     .flush_i    ( '0                                        ),  // flush the queue
     .testmode_i ( test_i                                    ),  // test_mode
     .full_o     ( r_switch_full                             ),  // queue is full
@@ -189,6 +191,7 @@ module axi_llc_ways #(
   ) i_e_switch_fifo (
     .clk_i,                                                     // Clock
     .rst_ni,                                                    // Asynchronous reset active low
+    .clr_i      ( '0                                        ),  // Synchronous clear active high
     .flush_i    ( '0                                        ),  // flush the queue
     .testmode_i ( test_i                                    ),  // test_mode
     .full_o     ( e_switch_full                             ),  // queue is full

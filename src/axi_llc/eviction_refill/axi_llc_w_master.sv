@@ -263,6 +263,7 @@ module axi_llc_w_master #(
   ) i_r_data_fifo (
     .clk_i        ( clk_i             ),  // Clock
     .rst_ni       ( rst_ni            ),  // Asynchronous reset active low
+    .clr_i        ( '0                ),  // Synchronous clear active high
     .flush_i      ( '0                ),  // flush the queue
     .testmode_i   ( test_i            ),  // test_mode to bypass clock gating
     // status flags
@@ -283,6 +284,7 @@ module axi_llc_w_master #(
   ) i_block_offset_counter (
     .clk_i        ( clk_i        ),
     .rst_ni       ( rst_ni       ),
+    .reg_clear    ( '0           ),
     .clear_i      ( 1'b0         ), // counter do not get cleared
     .en_i         ( en_cnt_req   ),
     .load_i       ( load_cnt     ),
@@ -297,6 +299,7 @@ module axi_llc_w_master #(
   ) i_w_to_send_counter (
     .clk_i        ( clk_i         ),
     .rst_ni       ( rst_ni        ),
+    .reg_clear    ( '0            ),
     .clear_i      ( 1'b0          ), // counter do not get cleared
     .en_i         ( en_cnt_w_chan ),
     .load_i       ( load_cnt      ),

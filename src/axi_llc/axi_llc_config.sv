@@ -612,6 +612,7 @@ module axi_llc_config #(
   ) i_flush_send_counter (
     .clk_i      ( clk_i                   ),
     .rst_ni     ( rst_ni                  ),
+    .reg_clear  ( '0                      ),
     .clear_i    ( clear_cnt               ),
     .en_i       ( en_send_cnt             ),
     .load_i     ( load_cnt                ),
@@ -627,6 +628,7 @@ module axi_llc_config #(
   ) i_flush_recv_counter (
     .clk_i      ( clk_i                   ),
     .rst_ni     ( rst_ni                  ),
+    .reg_clear  ( '0                      ),
     .clear_i    ( clear_cnt               ),
     .en_i       ( en_recv_cnt             ),
     .load_i     ( load_cnt                ),

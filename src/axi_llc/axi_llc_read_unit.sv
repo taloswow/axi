@@ -213,6 +213,7 @@ module axi_llc_read_unit #(
   ) i_r_meta_fifo (
     .clk_i,                             // Clock
     .rst_ni,                            // Asynchronous reset active low
+    .clr_i        ( '0              ),  // Synchronous clear active high
     .flush_i      ( '0              ),  // flush the queue
     .testmode_i   ( test_i          ),  // test_mode to bypass clock gating
     .full_o       ( meta_fifo_full  ),  // queue is full
@@ -230,6 +231,7 @@ module axi_llc_read_unit #(
   ) i_r_fifo (
     .clk_i,                          // Clock
     .rst_ni,                         // Asynchronous reset active low
+    .clr_i        ( '0              ),  // Synchronous clear active high
     .flush_i      ( '0           ),  // flush the queue
     .testmode_i   ( test_i       ),  // test_mode to bypass clock gating
     .full_o       ( r_fifo_full  ),  // queue is full

@@ -299,6 +299,7 @@ module axi_llc_tag_store #(
     ) i_shift_reg_rvalid (
       .clk_i,
       .rst_ni,
+      .clr_i  ( '0                      ),
       .d_i    ( ram_req[i] & ~ram_we[i] ),
       .d_o    ( ram_rvalid[i]           )
     );
@@ -349,6 +350,7 @@ module axi_llc_tag_store #(
   ) i_shift_reg_bist (
     .clk_i,
     .rst_ni,
+    .clr_i  ( '0           ),
     .d_i    ( gen_pattern  ),
     .d_o    ( bist_pattern )
   );
@@ -414,6 +416,7 @@ module axi_llc_tag_store #(
   ) i_spill_register (
     .clk_i,
     .rst_ni,
+    .clr_i   ( '0        ),
     .valid_i ( res_valid ),
     .ready_o ( res_ready ),
     .data_i  ( res       ),

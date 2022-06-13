@@ -91,6 +91,7 @@ module axi_err_slv #(
   ) i_w_fifo (
     .clk_i      ( clk_i             ),
     .rst_ni     ( rst_ni            ),
+    .clr_i      ( '0                ),
     .flush_i    ( 1'b0              ),
     .testmode_i ( test_i            ),
     .full_o     ( w_fifo_full       ),
@@ -124,6 +125,7 @@ module axi_err_slv #(
   ) i_b_fifo (
     .clk_i      ( clk_i        ),
     .rst_ni     ( rst_ni       ),
+    .clr_i      ( '0           ),
     .flush_i    ( 1'b0         ),
     .testmode_i ( test_i       ),
     .full_o     ( b_fifo_full  ),
@@ -166,6 +168,7 @@ module axi_err_slv #(
   ) i_r_fifo (
     .clk_i     ( clk_i        ),
     .rst_ni    ( rst_ni       ),
+    .clr_i     ( '0           ),
     .flush_i   ( 1'b0         ),
     .testmode_i( test_i       ),
     .full_o    ( r_fifo_full  ),
@@ -230,6 +233,7 @@ module axi_err_slv #(
   ) i_r_counter (
     .clk_i     ( clk_i           ),
     .rst_ni    ( rst_ni          ),
+    .reg_clear ( '0              ),
     .clear_i   ( r_cnt_clear     ),
     .en_i      ( r_cnt_en        ),
     .load_i    ( r_cnt_load      ),

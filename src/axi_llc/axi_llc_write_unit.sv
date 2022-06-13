@@ -102,6 +102,7 @@ module axi_llc_write_unit #(
   ) i_w_stream_fifo (
     .clk_i,
     .rst_ni,
+    .clr_i      ( '0             ),
     .flush_i    ( 1'b0           ),
     .testmode_i ( test_i         ),
     .usage_o    ( /*not used*/   ),
@@ -217,6 +218,7 @@ module axi_llc_write_unit #(
   ) i_spill_register_b (
     .clk_i,
     .rst_ni,
+    .clr_i   ( '0             ),
     .valid_i ( b_valid        ),
     .ready_o ( b_ready        ),
     .data_i  ( b_chan         ),

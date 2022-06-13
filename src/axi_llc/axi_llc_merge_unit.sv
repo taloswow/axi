@@ -84,6 +84,7 @@ module axi_llc_merge_unit #(
   ) i_stream_xbar (
     .clk_i,
     .rst_ni,
+    .clr_i   ( '0                                 ),
     .flush_i ( '0                                 ),
     .rr_i    ( '0                                 ),
     .data_i  ({bypass_desc_i,    refill_desc_i   }),

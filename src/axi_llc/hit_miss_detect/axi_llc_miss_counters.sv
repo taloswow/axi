@@ -102,6 +102,7 @@ module axi_llc_miss_counters #(
     ) i_miss_cnt (
       .clk_i      (     clk_i ),
       .rst_ni     (    rst_ni ),
+      .reg_clear  (        '0 ),
       .clear_i    (        '0 ),
       .en_i       (     en[j] ),
       .load_i     (        '0 ),
@@ -117,6 +118,7 @@ module axi_llc_miss_counters #(
   ) i_miss_w_cnt (
     .clk_i      ( clk_i             ),
     .rst_ni     ( rst_ni            ),
+    .reg_clear  ( '0                ),
     .clear_i    ( '0                ),
     .en_i       ( en_w              ),
     .load_i     ( '0                ),
